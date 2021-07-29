@@ -8,6 +8,7 @@ using namespace v8;
 
 #include <cassert>
 #include <cstdlib>
+#include <functional>
 
 #ifdef __WIN32
 	#include <Windows.h>
@@ -15,6 +16,7 @@ using namespace v8;
 	#include <unistd.h>
 #endif
 
+#define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
 class ObjectCreator{
@@ -68,10 +70,14 @@ class ZendaJS{
         Local<ObjectTemplate> global;
 
         static void Version(const FunctionCallbackInfo<Value>& args){
+            HandleScope Scope(args.GetIsolate());
+
             PrintVersion();
         }
 
         static void Creator(const FunctionCallbackInfo<Value>& args){
+            HandleScope Scope(args.GetIsolate());
+
             PrintCreator();
         }
 
@@ -79,6 +85,8 @@ class ZendaJS{
             Py_Initialize();
             
             for(unsigned short int i = 0; i < args.Length(); i++){
+                HandleScope Scope(args.GetIsolate());
+
                 String::Utf8Value Code(args.GetIsolate(), args[i]);
 
                 char const* CharCode = ToCString(Code);
@@ -93,6 +101,8 @@ class ZendaJS{
             Py_Initialize();
 
             for(unsigned short int i = 0; i < args.Length(); i++){
+                HandleScope Scope(args.GetIsolate());
+
                 String::Utf8Value File(args.GetIsolate(), args[i]);
 
                 char const* CharFile = ToCString(File);
@@ -105,12 +115,31 @@ class ZendaJS{
                     cout << "ZendaJS -> An error ocurred while trying open <" << CharFile << "> in pythonFile() function." << endl;
                 else
                     PyRun_SimpleFile(PyFile, CharFile);
+
+                fclose(PyFile);
             }
 
             Py_Finalize();
         }
 
+        static void GetCurrentWorkingDirectory(const FunctionCallbackInfo<Value>& args){
+            HandleScope Scope(args.GetIsolate());
+
+            string Directory = CurrentWorkingDirectory();
+
+            args.GetReturnValue().Set(
+                String::NewFromUtf8(
+                    args.GetIsolate(),
+                    Directory.c_str(),
+                    NewStringType::kNormal,
+                    static_cast<int>(Directory.length())
+                ).ToLocalChecked()
+            );
+        }
+
         static void Sleep(const FunctionCallbackInfo<Value>& args){
+            HandleScope Scope(args.GetIsolate());
+            
             String::Utf8Value SleepTime(args.GetIsolate(), args[0]);
 
             char const* CharSleepTime = ToCString(SleepTime);
@@ -120,6 +149,8 @@ class ZendaJS{
 
         static void ConsoleLog(const FunctionCallbackInfo<Value>& args){
             for(unsigned short int i = 0; i < args.Length(); i++){
+                HandleScope Scope(args.GetIsolate());
+   
                 if(i > 0) cout << " ";
 
                 String::Utf8Value Text(args.GetIsolate(), args[i]);
@@ -133,6 +164,8 @@ class ZendaJS{
         }
 
         static void ConsoleSetColor(const FunctionCallbackInfo<Value>& args){
+            HandleScope Scope(args.GetIsolate());
+
             String::Utf8Value ColorIdentifier(args.GetIsolate(), args[0]);
             
             const char* CharColorIdentifier = ToCString(ColorIdentifier);
@@ -141,6 +174,8 @@ class ZendaJS{
         }
 
         static void ConsoleSetStyle(const FunctionCallbackInfo<Value>& args){
+            HandleScope Scope(args.GetIsolate());
+
             String::Utf8Value StyleIdentifier(args.GetIsolate(), args[0]);
 
             const char* CharStyleIdentifier = ToCString(StyleIdentifier);
@@ -149,6 +184,8 @@ class ZendaJS{
         }
 
         static void ConsoleSetBackground(const FunctionCallbackInfo<Value>& args){
+            HandleScope Scope(args.GetIsolate());
+
             String::Utf8Value BackgroundIdentifier(args.GetIsolate(), args[0]);
             
             const char* CharBackgroundIdentifier = ToCString(BackgroundIdentifier);
@@ -157,6 +194,8 @@ class ZendaJS{
         }
 
         static void ConsoleGetBackground(const FunctionCallbackInfo<Value>& args){
+            HandleScope Scope(args.GetIsolate());
+
             String::Utf8Value BackgroundIdentifier(args.GetIsolate(), args[0]);
 
             const char* CharBackgroundIdentifier = ToCString(BackgroundIdentifier);
@@ -174,6 +213,8 @@ class ZendaJS{
         }
 
         static void ConsoleGetStyle(const FunctionCallbackInfo<Value>& args){
+            HandleScope Scope(args.GetIsolate());
+
             String::Utf8Value StyleIdentifier(args.GetIsolate(), args[0]);
             
             const char* CharStyleIdentifier = ToCString(StyleIdentifier);
@@ -191,6 +232,8 @@ class ZendaJS{
         }
 
         static void ConsoleGetColor(const FunctionCallbackInfo<Value>& args){
+            HandleScope Scope(args.GetIsolate());
+
             String::Utf8Value ColorIdentifier(args.GetIsolate(), args[0]);
 
             const char* CharColorIdentifier = ToCString(ColorIdentifier);
@@ -208,6 +251,8 @@ class ZendaJS{
         }
 
         static void ConsoleClear(const FunctionCallbackInfo<Value>& args){
+            HandleScope Scope(args.GetIsolate());
+        
             ClearConsole();
         }
         
@@ -251,6 +296,8 @@ class ZendaJS{
         }
 
         static void SystemPlatform(const FunctionCallbackInfo<Value>& args){
+            HandleScope Scope(args.GetIsolate());
+
             string OS = OperativeSystem();
 
             args.GetReturnValue().Set(
@@ -288,7 +335,7 @@ class ZendaJS{
         
                     V8::Initialize();
         }
-                
+
         void CreateVM(){
             this->create_params.array_buffer_allocator = ArrayBuffer::Allocator::NewDefaultAllocator();
         
@@ -351,6 +398,8 @@ class ZendaJS{
             this->CreateMethod("version", Version);
 
             this->CreateMethod("creator", Creator);
+
+            this->CreateMethod("getcwd", GetCurrentWorkingDirectory);
 
             this->CreateMethod("sleep", Sleep);
 
@@ -517,6 +566,7 @@ class ZendaJS{
                 FunctionTemplate::New(this->GetIsolate(), Callback)
             );
         }
+
         void Initialize(int argc, char* argv[]){
                 this->CreatePlatform(argv);
 

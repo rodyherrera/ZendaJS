@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <v8.h>
+#include <unistd.h>
 using namespace std;
 using namespace v8;
 
@@ -16,6 +17,16 @@ const char* ZendaCreator = R"""(
 ./ /__|  __/ | | | (_| | (_| /\__/ /\__/ /   | https://github.com/rodiihernandezz/
 \_____/\___|_| |_|\__,_|\__,_\____/\____/         
 )""";
+
+string CurrentWorkingDirectory(){
+    char* cwd = getcwd(0,0);
+
+    string working_directory(cwd);
+    
+    free(cwd);
+    
+    return working_directory;
+}
 
 const char* OperativeSystem(){
     #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)

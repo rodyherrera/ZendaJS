@@ -6,3 +6,6 @@ creator();
 
 // Version -> Get Zenda version
 version();
+
+// Getcwd -> Get current working directory
+console.log(getcwd())
