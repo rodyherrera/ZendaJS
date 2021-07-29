@@ -32,7 +32,7 @@ Using example file
 ```bash
 ./Zenda examples/computer.js
 OR
-./Zenda <your_javascript_file_location.js>
+./Zenda your_javascript_file_location.js
 ```
 
 ## Contributing
