@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <fstream>
 #include <map>
 #include <v8.h>
 #include <unistd.h>
@@ -46,6 +47,71 @@ const char* OperativeSystem(){
     #else
         return "UKNOWN";
     #endif
+}
+
+MaybeLocal<String> ReadFileUsingV8(const char* Filename, Isolate* LIsolate){
+    FILE* File = fopen(Filename, "rb");
+
+    if(File == NULL)
+        return MaybeLocal<String>();
+
+    fseek(File, 0, SEEK_END);
+
+    size_t Size = ftell(File);
+
+    rewind(File);
+
+    char* Characters = new char[Size + 1];
+
+    Characters[Size] = '\0';
+
+    for(size_t i = 0; i < Size;){
+        i += fread(&Characters[i], 1, Size - i, File);
+
+        if(ferror(File)){
+            fclose(File);
+                        
+            return MaybeLocal<String>();
+        }
+    }
+
+    fclose(File);
+
+    MaybeLocal<String> Content = String::NewFromUtf8(
+        LIsolate, Characters, NewStringType::kNormal, static_cast<int>(Size)
+    );
+
+    delete[] Characters;
+
+    return Content;
+}
+
+char* ReadFile(char Filename[]){
+        ifstream File;
+
+        File.open(Filename, ifstream::ate);
+
+        char* Contents;
+
+        if(!File){
+            Contents = new char[1];
+            
+            return Contents;
+        }
+
+        size_t FileSize = File.tellg();
+
+        File.seekg(0);
+
+        filebuf* FileBuf = File.rdbuf();
+
+        Contents = new char[FileSize + 1]();
+
+        FileBuf->sgetn(Contents, FileSize);
+        
+        File.close();
+
+        return Contents;
 }
 
 const char* StringToLower(string String){

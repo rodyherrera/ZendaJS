@@ -19,6 +19,105 @@ using namespace v8;
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
+#include <vector>
+
+namespace Modules{
+
+    MaybeLocal<Module> CallResolve(Local<Context> MContext, Local<String> Specifier, Local<Module> Referrer);
+
+    MaybeLocal<Module> Load(char Code[], char Name[], Local<Context> MContext){
+        Local<String> VMCode = String::NewFromUtf8(MContext->GetIsolate(), Code).ToLocalChecked();
+
+        ScriptOrigin Origin(
+            String::NewFromUtf8(MContext->GetIsolate(), Name).ToLocalChecked(),
+
+            Integer::New(MContext->GetIsolate(), 0),
+
+            Integer::New(MContext->GetIsolate(), 0),
+
+            False(MContext->GetIsolate()),
+
+            Local<Integer>(),
+
+            Local<Value>(),
+
+            False(MContext->GetIsolate()),
+
+            False(MContext->GetIsolate()),
+
+            True(MContext->GetIsolate())
+        );
+
+        Context::Scope ContextScope(MContext);
+
+        ScriptCompiler::Source LSource(VMCode, Origin);
+
+        MaybeLocal<Module> LModule;
+
+        LModule = ScriptCompiler::CompileModule(MContext->GetIsolate(), &LSource);
+
+        return LModule;
+    }
+
+    Local<Module> Check(MaybeLocal<Module> MaybeModule, Local<Context> MContext){
+        Local<Module> LModule;
+
+        if(!MaybeModule.ToLocal(&LModule)){
+            cout << "Error loading module" << endl;
+
+            exit(EXIT_FAILURE);
+        }
+
+        Maybe<bool> Result = LModule->InstantiateModule(MContext, CallResolve);
+
+        if(Result.IsNothing()){
+            cout << "Can't instantiate module." << endl;
+            
+            exit(EXIT_FAILURE);
+        }
+
+        return LModule;
+    }
+
+    Local<Value> Execute(Local<Module> LModule, Local<Context> MContext, bool NsObject = false){
+        Local<Value> ReturnValue;
+
+        if(!LModule->Evaluate(MContext).ToLocal(&ReturnValue)){
+            cout << "Error evaluating module." << endl;
+
+            exit(EXIT_FAILURE);
+        }
+
+        if(NsObject)
+            return LModule->GetModuleNamespace();
+        else
+            return ReturnValue;
+    }
+
+    MaybeLocal<Module> CallResolve(Local<Context> MContext, Local<String> Specifier, Local<Module> Referrer){
+        String::Utf8Value Str(MContext->GetIsolate(), Specifier);
+
+        return Load(ReadFile(*Str), *Str, MContext);
+    }
+
+    MaybeLocal<Promise> CallDynamic(Local<Context> MContext, Local<ScriptOrModule> Referrer, Local<String> Specifier){
+        Local<Promise::Resolver> Resolver = Promise::Resolver::New(MContext).ToLocalChecked();
+
+        MaybeLocal<Promise> LPromise(Resolver->GetPromise());
+
+        String::Utf8Value Name(MContext->GetIsolate(), Specifier);
+
+        Local<Module> LModule = Check(Load(ReadFile(*Name), *Name, MContext), MContext);
+
+        Local<Value> ReturnValue = Execute(LModule, MContext, true);
+
+        Maybe<bool> MResolve = Resolver->Resolve(MContext, ReturnValue);
+
+        return LPromise;
+    }
+
+}
+
 class ObjectCreator{
     private:
         Isolate* isolate;
@@ -36,7 +135,7 @@ class ObjectCreator{
             ).ToLocalChecked();
         }
 
-        ObjectCreator SetPropertyMethod(const char* propertymethod, void (*callback)(const FunctionCallbackInfo<Value>& args)){
+        ObjectCreator SetPropertyMethod(const char* propertymethod, void (*callback)(const FunctionCallbackInfo<Value>& Arguments)){
             this->ObjectInstance->Set(
                 String::NewFromUtf8(this->isolate, propertymethod, NewStringType::kNormal).ToLocalChecked(),
                 
@@ -69,25 +168,27 @@ class ZendaJS{
 
         Local<ObjectTemplate> global;
 
-        static void Version(const FunctionCallbackInfo<Value>& args){
-            HandleScope Scope(args.GetIsolate());
+        vector<string> ZendaJSCoreFiles;
+
+        static void Version(const FunctionCallbackInfo<Value>& Arguments){
+            HandleScope Scope(Arguments.GetIsolate());
 
             PrintVersion();
         }
 
-        static void Creator(const FunctionCallbackInfo<Value>& args){
-            HandleScope Scope(args.GetIsolate());
+        static void Creator(const FunctionCallbackInfo<Value>& Arguments){
+            HandleScope Scope(Arguments.GetIsolate());
 
             PrintCreator();
         }
 
-        static void PythonString(const FunctionCallbackInfo<Value>& args){
+        static void PythonString(const FunctionCallbackInfo<Value>& Arguments){
             Py_Initialize();
             
-            for(unsigned short int i = 0; i < args.Length(); i++){
-                HandleScope Scope(args.GetIsolate());
+            for(unsigned short int i = 0; i < Arguments.Length(); i++){
+                HandleScope Scope(Arguments.GetIsolate());
 
-                String::Utf8Value Code(args.GetIsolate(), args[i]);
+                String::Utf8Value Code(Arguments.GetIsolate(), Arguments[i]);
 
                 char const* CharCode = ToCString(Code);
 
@@ -97,13 +198,13 @@ class ZendaJS{
             Py_Finalize();
         }
 
-        static void PythonFile(const FunctionCallbackInfo<Value>& args){
+        static void PythonFile(const FunctionCallbackInfo<Value>& Arguments){
             Py_Initialize();
 
-            for(unsigned short int i = 0; i < args.Length(); i++){
-                HandleScope Scope(args.GetIsolate());
+            for(unsigned short int i = 0; i < Arguments.Length(); i++){
+                HandleScope Scope(Arguments.GetIsolate());
 
-                String::Utf8Value File(args.GetIsolate(), args[i]);
+                String::Utf8Value File(Arguments.GetIsolate(), Arguments[i]);
 
                 char const* CharFile = ToCString(File);
 
@@ -122,14 +223,14 @@ class ZendaJS{
             Py_Finalize();
         }
 
-        static void GetCurrentWorkingDirectory(const FunctionCallbackInfo<Value>& args){
-            HandleScope Scope(args.GetIsolate());
+        static void GetCurrentWorkingDirectory(const FunctionCallbackInfo<Value>& Arguments){
+            HandleScope Scope(Arguments.GetIsolate());
 
             string Directory = CurrentWorkingDirectory();
 
-            args.GetReturnValue().Set(
+            Arguments.GetReturnValue().Set(
                 String::NewFromUtf8(
-                    args.GetIsolate(),
+                    Arguments.GetIsolate(),
                     Directory.c_str(),
                     NewStringType::kNormal,
                     static_cast<int>(Directory.length())
@@ -137,23 +238,23 @@ class ZendaJS{
             );
         }
 
-        static void Sleep(const FunctionCallbackInfo<Value>& args){
-            HandleScope Scope(args.GetIsolate());
+        static void Sleep(const FunctionCallbackInfo<Value>& Arguments){
+            HandleScope Scope(Arguments.GetIsolate());
             
-            String::Utf8Value SleepTime(args.GetIsolate(), args[0]);
+            String::Utf8Value SleepTime(Arguments.GetIsolate(), Arguments[0]);
 
             char const* CharSleepTime = ToCString(SleepTime);
 
-            sleep(stoi(CharSleepTime));
+            sleep(stoi(CharSleepTime) / 1000);
         }
 
-        static void ConsoleLog(const FunctionCallbackInfo<Value>& args){
-            for(unsigned short int i = 0; i < args.Length(); i++){
-                HandleScope Scope(args.GetIsolate());
+        static void ConsoleLog(const FunctionCallbackInfo<Value>& Arguments){
+            for(unsigned short int i = 0; i < Arguments.Length(); i++){
+                HandleScope Scope(Arguments.GetIsolate());
    
                 if(i > 0) cout << " ";
 
-                String::Utf8Value Text(args.GetIsolate(), args[i]);
+                String::Utf8Value Text(Arguments.GetIsolate(), Arguments[i]);
 
                 const char* CharText = ToCString(Text);
 
@@ -163,48 +264,48 @@ class ZendaJS{
             cout << endl;
         }
 
-        static void ConsoleSetColor(const FunctionCallbackInfo<Value>& args){
-            HandleScope Scope(args.GetIsolate());
+        static void ConsoleSetColor(const FunctionCallbackInfo<Value>& Arguments){
+            HandleScope Scope(Arguments.GetIsolate());
 
-            String::Utf8Value ColorIdentifier(args.GetIsolate(), args[0]);
+            String::Utf8Value ColorIdentifier(Arguments.GetIsolate(), Arguments[0]);
             
             const char* CharColorIdentifier = ToCString(ColorIdentifier);
             
             cout << ConsoleColor(CharColorIdentifier);
         }
 
-        static void ConsoleSetStyle(const FunctionCallbackInfo<Value>& args){
-            HandleScope Scope(args.GetIsolate());
+        static void ConsoleSetStyle(const FunctionCallbackInfo<Value>& Arguments){
+            HandleScope Scope(Arguments.GetIsolate());
 
-            String::Utf8Value StyleIdentifier(args.GetIsolate(), args[0]);
+            String::Utf8Value StyleIdentifier(Arguments.GetIsolate(), Arguments[0]);
 
             const char* CharStyleIdentifier = ToCString(StyleIdentifier);
 
             cout << ConsoleStyle(CharStyleIdentifier);
         }
 
-        static void ConsoleSetBackground(const FunctionCallbackInfo<Value>& args){
-            HandleScope Scope(args.GetIsolate());
+        static void ConsoleSetBackground(const FunctionCallbackInfo<Value>& Arguments){
+            HandleScope Scope(Arguments.GetIsolate());
 
-            String::Utf8Value BackgroundIdentifier(args.GetIsolate(), args[0]);
+            String::Utf8Value BackgroundIdentifier(Arguments.GetIsolate(), Arguments[0]);
             
             const char* CharBackgroundIdentifier = ToCString(BackgroundIdentifier);
             
             cout << ConsoleBackground(CharBackgroundIdentifier);
         }
 
-        static void ConsoleGetBackground(const FunctionCallbackInfo<Value>& args){
-            HandleScope Scope(args.GetIsolate());
+        static void ConsoleGetBackground(const FunctionCallbackInfo<Value>& Arguments){
+            HandleScope Scope(Arguments.GetIsolate());
 
-            String::Utf8Value BackgroundIdentifier(args.GetIsolate(), args[0]);
+            String::Utf8Value BackgroundIdentifier(Arguments.GetIsolate(), Arguments[0]);
 
             const char* CharBackgroundIdentifier = ToCString(BackgroundIdentifier);
 
             string Background = ConsoleBackground(CharBackgroundIdentifier);
 
-            args.GetReturnValue().Set(
+            Arguments.GetReturnValue().Set(
                 String::NewFromUtf8(
-                    args.GetIsolate(),
+                    Arguments.GetIsolate(),
                     Background.c_str(),
                     NewStringType::kNormal,
                     static_cast<int>(Background.length())
@@ -212,18 +313,18 @@ class ZendaJS{
             );
         }
 
-        static void ConsoleGetStyle(const FunctionCallbackInfo<Value>& args){
-            HandleScope Scope(args.GetIsolate());
+        static void ConsoleGetStyle(const FunctionCallbackInfo<Value>& Arguments){
+            HandleScope Scope(Arguments.GetIsolate());
 
-            String::Utf8Value StyleIdentifier(args.GetIsolate(), args[0]);
+            String::Utf8Value StyleIdentifier(Arguments.GetIsolate(), Arguments[0]);
             
             const char* CharStyleIdentifier = ToCString(StyleIdentifier);
             
             string Style = ConsoleStyle(CharStyleIdentifier);
             
-            args.GetReturnValue().Set(
+            Arguments.GetReturnValue().Set(
                 String::NewFromUtf8(
-                    args.GetIsolate(),
+                    Arguments.GetIsolate(),
                     Style.c_str(),
                     NewStringType::kNormal,
                     static_cast<int>(Style.length())
@@ -231,18 +332,18 @@ class ZendaJS{
             );
         }
 
-        static void ConsoleGetColor(const FunctionCallbackInfo<Value>& args){
-            HandleScope Scope(args.GetIsolate());
+        static void ConsoleGetColor(const FunctionCallbackInfo<Value>& Arguments){
+            HandleScope Scope(Arguments.GetIsolate());
 
-            String::Utf8Value ColorIdentifier(args.GetIsolate(), args[0]);
+            String::Utf8Value ColorIdentifier(Arguments.GetIsolate(), Arguments[0]);
 
             const char* CharColorIdentifier = ToCString(ColorIdentifier);
 
             string Color = ConsoleColor(CharColorIdentifier);
 
-            args.GetReturnValue().Set(
+            Arguments.GetReturnValue().Set(
                 String::NewFromUtf8(
-                    args.GetIsolate(),
+                    Arguments.GetIsolate(),
                     Color.c_str(),
                     NewStringType::kNormal,
                     static_cast<int>(Color.length())
@@ -250,19 +351,19 @@ class ZendaJS{
             );
         }
 
-        static void ConsoleClear(const FunctionCallbackInfo<Value>& args){
-            HandleScope Scope(args.GetIsolate());
+        static void ConsoleClear(const FunctionCallbackInfo<Value>& Arguments){
+            HandleScope Scope(Arguments.GetIsolate());
         
             ClearConsole();
         }
         
-        static void ConsoleInput(const FunctionCallbackInfo<Value>& args){
-            for(unsigned short int i = 0; i < args.Length(); i++){
-                HandleScope scope(args.GetIsolate());
+        static void ConsoleInput(const FunctionCallbackInfo<Value>& Arguments){
+            for(unsigned short int i = 0; i < Arguments.Length(); i++){
+                HandleScope scope(Arguments.GetIsolate());
 
                 if(i > 0) cout << " ";
 
-                String::Utf8Value Text(args.GetIsolate(), args[i]);
+                String::Utf8Value Text(Arguments.GetIsolate(), Arguments[i]);
 
                 const char* CharText = ToCString(Text);
 
@@ -273,9 +374,9 @@ class ZendaJS{
 
             getline(cin, Response);
 
-            args.GetReturnValue().Set(
+            Arguments.GetReturnValue().Set(
                 String::NewFromUtf8(
-                    args.GetIsolate(),
+                    Arguments.GetIsolate(),
                     Response.c_str(),
                     NewStringType::kNormal,
                     static_cast<int>(Response.length())
@@ -283,11 +384,11 @@ class ZendaJS{
             );
         }
 
-        static void SystemExecute(const FunctionCallbackInfo<Value>& args){
-            for(unsigned short int i = 0; i < args.Length(); i++){
-                HandleScope Scope(args.GetIsolate());
+        static void SystemExecute(const FunctionCallbackInfo<Value>& Arguments){
+            for(unsigned short int i = 0; i < Arguments.Length(); i++){
+                HandleScope Scope(Arguments.GetIsolate());
 
-                String::Utf8Value Command(args.GetIsolate(), args[i]);
+                String::Utf8Value Command(Arguments.GetIsolate(), Arguments[i]);
 
                 const char* CharCommand = ToCString(Command);
 
@@ -295,14 +396,14 @@ class ZendaJS{
             }
         }
 
-        static void SystemPlatform(const FunctionCallbackInfo<Value>& args){
-            HandleScope Scope(args.GetIsolate());
+        static void SystemPlatform(const FunctionCallbackInfo<Value>& Arguments){
+            HandleScope Scope(Arguments.GetIsolate());
 
             string OS = OperativeSystem();
 
-            args.GetReturnValue().Set(
+            Arguments.GetReturnValue().Set(
                 String::NewFromUtf8(
-                    args.GetIsolate(),
+                    Arguments.GetIsolate(),
                     OS.c_str(),
                     NewStringType::kNormal,
                     static_cast<int>(OS.length())
@@ -340,6 +441,8 @@ class ZendaJS{
             this->create_params.array_buffer_allocator = ArrayBuffer::Allocator::NewDefaultAllocator();
         
             this->isolate = Isolate::New(this->create_params);
+
+            this->isolate->SetHostImportModuleDynamicallyCallback(Modules::CallDynamic);
         }
 
         void ShutdownVM(){
@@ -351,7 +454,14 @@ class ZendaJS{
             
             delete this->create_params.array_buffer_allocator;
         }
+        
+        void LoadZendaJSFiles(){
+            this->ZendaJSFiles();
 
+            for(unsigned short int i = 0; i < this->ZendaJSCoreFiles.size(); i++)
+                this->ExecuteFile(this->ZendaJSCoreFiles.at(i).c_str());
+        }
+        
         void Shell(Local<Context> SContext, Platform* SPlatform){
             ClearConsole();
             
@@ -429,6 +539,9 @@ class ZendaJS{
                 .Register();
         }
 
+        void ZendaJSFiles(){
+        }
+
         void ReportException(TryCatch* try_catch){
             String::Utf8Value exception(this->GetIsolate(), try_catch->Exception());
 
@@ -448,7 +561,7 @@ class ZendaJS{
                 int LineNumber = message->GetLineNumber(
                     this->GetIsolate()->GetCurrentContext()
                 ).FromJust();
-
+                
                 cout << "ZendaJS [Error in line " << to_string(LineNumber) << "] - [" << FilenameString << "]" << endl;
                 cout << endl << "-> " << ExceptionString << endl << endl;
 
@@ -483,7 +596,7 @@ class ZendaJS{
         bool ExecuteFile(const char* Filename){
             Local<String> Source;
 
-            if(!this->ReadFile(Filename).ToLocal(&Source))
+            if(!ReadFileUsingV8(Filename, this->GetIsolate()).ToLocal(&Source))
                 return false;
 
             if(!this->ExecuteString(Source, Filename))
@@ -522,49 +635,17 @@ class ZendaJS{
             }
         }
 
-        MaybeLocal<String> ReadFile(const char* Filename){
-            FILE* File = fopen(Filename, "rb");
-
-            if(File == NULL)
-                return MaybeLocal<String>();
-
-                fseek(File, 0, SEEK_END);
-
-                size_t Size = ftell(File);
-
-                rewind(File);
-
-                char* Characters = new char[Size + 1];
-
-                Characters[Size] = '\0';
-
-                for(size_t i = 0; i < Size;){
-                    i += fread(&Characters[i], 1, Size - i, File);
-
-                    if(ferror(File)){
-                        fclose(File);
-                        
-                        return MaybeLocal<String>();
-                    }
-                }
-
-                fclose(File);
-
-                MaybeLocal<String> Content = String::NewFromUtf8(
-                    this->GetIsolate(), Characters, NewStringType::kNormal, static_cast<int>(Size)
-                );
-
-                delete[] Characters;
-
-                return Content;
-        }
-
-        void CreateMethod(const char* MethodName, void(*Callback)(const FunctionCallbackInfo<Value>& args)){
+        void CreateMethod(const char* MethodName, void(*Callback)(const FunctionCallbackInfo<Value>& Arguments)){
             this->GetGlobal()->Set(
                 String::NewFromUtf8(this->GetIsolate(), MethodName, NewStringType::kNormal).ToLocalChecked(),
                 
                 FunctionTemplate::New(this->GetIsolate(), Callback)
             );
+        }
+
+
+        void AddZendaJSFile(string Path){
+            this->ZendaJSCoreFiles.push_back(Path);
         }
 
         void Initialize(int argc, char* argv[]){
@@ -590,6 +671,8 @@ class ZendaJS{
 
                     this->ZendaObjects();
 
+                    this->LoadZendaJSFiles();
+
                     if(!strcmp(Argument, "--shell")){
                         this->Shell(LContext, platform.get());
                         break;
@@ -600,10 +683,11 @@ class ZendaJS{
                         PrintCreator();
                         break;
                     }else{
-                        auto FileExecution = this->ExecuteFile(Argument);
+                        char* Contents = ReadFile(argv[i]);
 
-                        if(!FileExecution)
-                            cout << "ZendaJS -> An error ocurred while trying to open the file <" << Argument << ">." << endl;
+                        Local<Module> LModule = Modules::Check(Modules::Load(Contents, argv[i], LContext), LContext);
+
+                        Local<Value> Returned = Modules::Execute(LModule, LContext);
                     }
                 }
             }

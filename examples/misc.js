@@ -1,5 +1,5 @@
-// Sleep -> Wait seconds for next instruction
-sleep(.5); // 1 second / 2
+// Sleep -> Wait milliseconds for next instruction
+sleep(1000); // 1 second  / 500 = 500 ms
 
 // Creator -> Get Creator information
 creator();
