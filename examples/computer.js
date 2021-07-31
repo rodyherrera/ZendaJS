@@ -5,9 +5,9 @@ console.log(OperativeSystem);
 
 // Using sleep for wait and execute instructions after wait
 console.log('Showing network interface in next 5 seconds...');
-sleep(5);
+sleep(5000);
 
-// Executin command by OS
+// Executing command by OS
 if(OperativeSystem.startsWith('WIN')){
 
     // Running command

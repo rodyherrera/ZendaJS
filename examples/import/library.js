@@ -1,5 +1,5 @@
 export const SayHelloWithPython = () => {
-    pythonString("print('Hello world')");
+    pythonQuickString("print('Hello world')");
 }
 
 export const MyVar = "Hello";

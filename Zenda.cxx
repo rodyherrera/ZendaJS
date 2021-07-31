@@ -1,13 +1,11 @@
 #include <iostream>
 using namespace std;
 
-#include "src/Engine.hxx" // Import Engine
+#include "src/Engine.hxx"
 
-int main(int argc, char* argv[]){
+int main(int argc, char *argv[]){
 
-    ZendaJS ZendaJS; // Creating instance
-
-    ZendaJS.Initialize(argc, argv); // Initialize Zenda
+    Initialize(argc, argv);
 
     return 0;
 }
