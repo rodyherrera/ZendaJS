@@ -25,14 +25,14 @@ Executable commands
 ./Zenda --version # For get current version
 ./Zenda --creator # For get creator information
 ./Zenda --shell # For run Zenda Shell <Like Browser JS Console>
-./Zenda my_folder/my_file.js # For run javascript files
+./Zenda --execute my_folder/my_file.js # For run javascript files
 ```
 
 Using example file
 ```bash
-./Zenda examples/computer.js
+./Zenda --execute examples/computer.js
 OR
-./Zenda your_javascript_file_location.js
+./Zenda --execute your_javascript_file_location.js
 ```
 
 ## Contributing
