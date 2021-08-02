@@ -1,10 +1,7 @@
-#include <iostream>
-#include <v8.h>
-using namespace std;
-using namespace v8;
-
-const char* ZendaVersion = "1.0.3";
+const char* ZendaVersion = "1.0.4";
 const char* ZendaCreator = "Rodolfo Herrera Hernandez";
+
+vector<string> CallArguments;
 
 Isolate* ZendaIsolate;
 Local<String> ZendaName;

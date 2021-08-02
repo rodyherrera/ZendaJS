@@ -19,3 +19,16 @@ static void SystemPlatform(const FunctionCallbackInfo<Value>& Arguments){
         ).ToLocalChecked()
     );
 }
+
+static void SystemArguments(const FunctionCallbackInfo<Value>& Arguments){
+    HandleScope Scope(Arguments.GetIsolate());
+    Local<Context> ArgumentsContext = Context::New(ZendaIsolate);
+    Local<Array> ArgumentList = Array::New(ZendaIsolate, CallArguments.size());
+    for(unsigned short int i = 0; i < CallArguments.size(); i++){
+        Local<String> SomeArgument = String::NewFromUtf8(ZendaIsolate, CallArguments.at(i).c_str()).ToLocalChecked();
+        Maybe<bool> ArgumentAdded = ArgumentList->Set(ArgumentsContext, i, SomeArgument);
+    }
+    Arguments.GetReturnValue().Set(
+        ArgumentList
+    );
+}

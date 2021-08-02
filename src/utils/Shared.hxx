@@ -1,10 +1,3 @@
-#include <iostream>
-#include <map>
-#include <fstream>
-#include <v8.h>
-using namespace v8;
-using namespace std;
-
 const char* OperativeSystem(){
     #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
         #ifdef _WIN64
@@ -31,13 +24,6 @@ void ExecutePythonFileFromNative(const char* CharFile){
     system(Command.c_str());
 }
 
-void CreateFile(string FileName, string Content = ""){
-    ofstream OutFile(FileName);
-    if(Content.length())
-        OutFile << Content;
-    OutFile.close();
-}
-
 char* ReadFile(char Filename[]){
     ifstream File;
     File.open(Filename, ifstream::ate);
@@ -53,6 +39,11 @@ char* ReadFile(char Filename[]){
     FileBuf->sgetn(Contents, FileSize);
     File.close();
     return Contents;
+}
+
+inline bool FileExists(const string& name) {
+    ifstream f(name.c_str());
+    return f.good();
 }
 
 MaybeLocal<String> ReadFileUsingV8(const char* Filename, Isolate* LIsolate){
@@ -141,4 +132,41 @@ const char* ConsoleColor(string Color){
 void ClearConsole(){
     string OS = OperativeSystem();
     (OS == "WIN32") || (OS == "WIN64") ? system("cls") : system("clear");
+}
+
+void ReportException(TryCatch* try_catch){
+    String::Utf8Value exception(ZendaIsolate, try_catch->Exception());
+    const char* ExceptionString = ToCString(exception);
+    Local<Message> message = try_catch->Message();
+    if(message.IsEmpty())
+        cout << ExceptionString << endl;
+    else{
+        String::Utf8Value Filename(
+            ZendaIsolate, message->GetScriptOrigin().ResourceName()
+        );
+        const char* FilenameString = ToCString(Filename);
+        int LineNumber = message->GetLineNumber(
+            ZendaIsolate->GetCurrentContext()
+        ).FromJust();
+        cout << "ZendaJS [Error in line " << to_string(LineNumber) << "] - [" << FilenameString << "]" << endl;
+        cout << endl << "-> " << ExceptionString << endl << endl;
+        String::Utf8Value SourceLine(
+            ZendaIsolate,
+                message->GetSourceLine(ZendaIsolate->GetCurrentContext()).ToLocalChecked()
+            );
+        const char* SourceLineString = ToCString(SourceLine);
+        cout << SourceLineString << endl;
+        unsigned int 
+            Start = message->GetStartColumn(
+                ZendaIsolate->GetCurrentContext()
+            ).FromJust(),
+            End = message->GetEndColumn(
+                ZendaIsolate->GetCurrentContext()
+            ).FromJust();
+            for(unsigned int i = 0; i < Start; i++) 
+                fprintf(stderr, " ");
+            for(unsigned int i = Start; i < End; i++)
+                fprintf(stderr, "^");
+            cout << endl;
+        }
 }

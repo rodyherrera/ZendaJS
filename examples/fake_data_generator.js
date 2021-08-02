@@ -41,7 +41,7 @@ class FakerGenerator{
     }
 
     // Using PythonString
-    DataOutput = () => pythonQuickString(`
+    DataOutput = () => pythonString(`
 from faker import Faker
 from faker.providers import internet
 

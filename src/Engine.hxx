@@ -12,18 +12,25 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
+// Utils folder files libraries used.
 #include <cassert>
+#include <map>
+#include <fstream>
+#include <algorithm>
+#include <vector>
 
 using namespace std;
 using namespace v8;
 
-#include "utils/String.hxx"
-#include "utils/Shared.hxx"
-
-#include "Module.hxx"
 #include "Global.hxx"
 
-#include "methods/Misc.hxx"
+#include "utils/String.hxx"
+#include "utils/Shared.hxx"
+#include "utils/Helpers.hxx"
+
+#include "Module.hxx"
+
+#include "methods/Misc.hxx" 
 #include "methods/Python.hxx"
 
 #include "objects/Console.hxx"
@@ -171,8 +178,8 @@ void EngineEnvironMethods(){
     CreateMethod("version", Version);
     CreateMethod("creator", Creator);
     CreateMethod("sleep", Sleep);
-    CreateMethod("pythonQuickString", PythonQuickString);
-    CreateMethod("pythonQuickFile", PythonQuickFile);
+    CreateMethod("pythonString", PythonQuickString);
+    CreateMethod("pythonFile", PythonQuickFile);
     CreateMethod("pythonFancyFile", PythonFancyFile);
 }
 
@@ -192,6 +199,7 @@ void EngineEnvironObjects(){
     CreateObject("system")
         .SetPropertyMethod("platform", SystemPlatform)
         .SetPropertyMethod("execute", SystemExecute)
+        .SetPropertyMethod("arguments", SystemArguments)
         .Register();
 }
 
@@ -205,7 +213,6 @@ void Shell(Local<Context> SContext, Platform* SPlatform){
     Local<String> name(
         String::NewFromUtf8(SContext->GetIsolate(), "(shell)", NewStringType::kNormal).ToLocalChecked()
     );
-
     while(true){
         char Buffer[kBufferSize];
         fprintf(stderr, "Console -> ");
@@ -222,44 +229,9 @@ void Shell(Local<Context> SContext, Platform* SPlatform){
         }
 }
 
-void ReportException(TryCatch* try_catch){
-    String::Utf8Value exception(ZendaIsolate, try_catch->Exception());
-    const char* ExceptionString = ToCString(exception);
-    Local<Message> message = try_catch->Message();
-    if(message.IsEmpty())
-        cout << ExceptionString << endl;
-    else{
-        String::Utf8Value Filename(
-            ZendaIsolate, message->GetScriptOrigin().ResourceName()
-        );
-        const char* FilenameString = ToCString(Filename);
-        int LineNumber = message->GetLineNumber(
-            ZendaIsolate->GetCurrentContext()
-        ).FromJust();
-        cout << "ZendaJS [Error in line " << to_string(LineNumber) << "] - [" << FilenameString << "]" << endl;
-        cout << endl << "-> " << ExceptionString << endl << endl;
-        String::Utf8Value SourceLine(
-            ZendaIsolate,
-                message->GetSourceLine(ZendaIsolate->GetCurrentContext()).ToLocalChecked()
-            );
-        const char* SourceLineString = ToCString(SourceLine);
-        cout << SourceLineString << endl;
-        unsigned int 
-            Start = message->GetStartColumn(
-                ZendaIsolate->GetCurrentContext()
-            ).FromJust(),
-            End = message->GetEndColumn(
-                ZendaIsolate->GetCurrentContext()
-            ).FromJust();
-            for(unsigned int i = 0; i < Start; i++) 
-                fprintf(stderr, " ");
-            for(unsigned int i = Start; i < End; i++)
-                fprintf(stderr, "^");
-            cout << endl;
-        }
-}
-
 void Initialize(int argc, char* argv[]){
+    bool SomeFileHasBeenExecuted = 0;
+    SetCallArguments(argc, argv);
     CreatePlatform(argv);
     CreateVirtualMachine();
     {
@@ -282,10 +254,25 @@ void Initialize(int argc, char* argv[]){
             }else if(!strcmp(Argument, "--shell")){
                 Shell(LContext, ZendaPlatform.get());
                 break;
+            }else if(!strcmp(Argument, "--install-dependencies")){
+                InstallDependencies();
+                break;
+            }else if(!strcmp(Argument, "--execute")){
+                const char* MaybeFile = argv[i + 1];
+                SomeFileHasBeenExecuted = true;
+                if(FileExists(MaybeFile)){
+                    char* Contents = ReadFile(strdup(MaybeFile));
+                    Local<Module> LModule = CheckModule(LoadModule(Contents, strdup(MaybeFile), LContext), LContext);
+                    Local<Value> Returned = ExecuteModule(LModule, LContext);
+                }else{
+                    cout << "The requested file <" << MaybeFile << "> was not found." << endl;
+                }
+            }else if( (!SomeFileHasBeenExecuted) || (!strcmp(Argument, "--help")) ){
+                ShowHelp();
+                if(!SomeFileHasBeenExecuted){
+                    exit(EXIT_FAILURE);
+                }
             }
-            char* Contents = ReadFile(strdup(Argument));
-            Local<Module> LModule = CheckModule(LoadModule(Contents, strdup(Argument), LContext), LContext);
-            Local<Value> Returned = ExecuteModule(LModule, LContext);
         }
     }
 

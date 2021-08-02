@@ -28,12 +28,11 @@ MaybeLocal<Module> LoadModule(char Code[], char Name[], Local<Context> MContext)
 Local<Module> CheckModule(MaybeLocal<Module> MaybeModule, Local<Context> MContext){
     Local<Module> LModule;
     if(!MaybeModule.ToLocal(&LModule)){
-        cout << "An error has been ocurred trying read the file." << endl;
         exit(EXIT_FAILURE);
     }
     Maybe<bool> Result = LModule->InstantiateModule(MContext, CallResolve);
     if(Result.IsNothing()){
-        cout << "Can't instantiate module/s." << endl;
+        cout << "An error occurred while loading the modules." << endl;
         exit(EXIT_FAILURE);
     }
     return LModule;
@@ -42,7 +41,6 @@ Local<Module> CheckModule(MaybeLocal<Module> MaybeModule, Local<Context> MContex
 Local<Value> ExecuteModule(Local<Module> LModule, Local<Context> MContext, bool NsObject = false){
     Local<Value> ReturnValue;
     if(!LModule->Evaluate(MContext).ToLocal(&ReturnValue)){
-        cout << "Error evaluating module." << endl;
         exit(EXIT_FAILURE);
     }
     if(NsObject)

@@ -1,4 +1,5 @@
 CXX = g++
+OUTPUT = Zenda
 V8 = libraries/v8
 PYTHON_INTEGRATION = -I libraries/python3.8 -lpython3.8
 
@@ -11,7 +12,7 @@ define APP
 endef
 
 define LIB
-	$(V8)/out/x64.release/obj/
+	$(V8)/lib/
 endef
 
 define OBJ
@@ -24,4 +25,4 @@ export LIB
 export OBJ
 
 build:
-	$(CXX) -I $$INCLUDE $$APP -L $$LIB -l $$OBJ -std=c++0x -pthread -o Zenda $(PYTHON_INTEGRATION)
+	$(CXX) -I $$INCLUDE $$APP -L $$LIB -l $$OBJ -std=c++0x -pthread -o $(OUTPUT) $(PYTHON_INTEGRATION) -DV8_COMPRESS_POINTERS

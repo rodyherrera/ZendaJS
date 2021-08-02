@@ -14,10 +14,10 @@ Your message is {MESSAGE} and it contains {len(MESSAGE)} characteres!
 `;
 
 // Calling the pythonString function for execute code
-pythonQuickString(code);
+pythonString(code);
 
 // Calling Python File
-pythonQuickFile('examples/PyIntegrationExample.py')
+pythonFile('examples/PyIntegrationExample.py')
 
 // You need enter exact python file location :)
 
