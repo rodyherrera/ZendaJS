@@ -22,6 +22,7 @@ In case an error occurs in the execution or the file does not exist, this will b
 
 Executable commands
 ```bash
+./Zenda --help # For get help about valid arguments for executable
 ./Zenda --version # For get current version
 ./Zenda --creator # For get creator information
 ./Zenda --shell # For run Zenda Shell <Like Browser JS Console>
