@@ -1,6 +1,8 @@
 const char* ZendaVersion = "1.0.4";
 const char* ZendaCreator = "Rodolfo Herrera Hernandez";
 
+string WorkingDirectory;
+
 vector<string> CallArguments;
 
 Isolate* ZendaIsolate;

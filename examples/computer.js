@@ -1,17 +1,20 @@
 // Using native function of Zenda
-var OperativeSystem = system.platform();
+var OperativeSystem = System.Platform();
 
-console.log(OperativeSystem);
+Console.Log(OperativeSystem);
+
+// Show current working directory/current path/current location
+Console.Log(System.CurrentWorkingDirectory());
 
 // Using sleep for wait and execute instructions after wait
-console.log('Showing network interface in next 5 seconds...');
-sleep(5000);
+Console.Log('Showing network interface in next 5 seconds...');
+Sleep(5000);
 
 // Executing command by OS
 if(OperativeSystem.startsWith('WIN')){
 
     // Running command
-    system.exec('ipconfig');
+    System.Execute('ipconfig');
 
 }else{
 
@@ -19,6 +22,6 @@ if(OperativeSystem.startsWith('WIN')){
 
     // Ipconfig for UNIX OS == ifconfig
 
-    system.execute('ifconfig');
+    System.Execute('ifconfig');
 
 }

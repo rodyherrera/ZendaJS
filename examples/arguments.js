@@ -1,6 +1,6 @@
 // Showing all the arguments with which the file was called.
-console.log(
-    system.arguments()
+Console.Log(
+    System.Arguments()
 );
 
 // For example, if you...

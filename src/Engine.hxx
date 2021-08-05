@@ -14,10 +14,10 @@
 
 // Utils folder files libraries used.
 #include <cassert>
-#include <map>
 #include <fstream>
 #include <algorithm>
 #include <vector>
+#include <map>
 
 using namespace std;
 using namespace v8;
@@ -26,15 +26,9 @@ using namespace v8;
 
 #include "utils/String.hxx"
 #include "utils/Shared.hxx"
-#include "utils/Helpers.hxx"
+#include "Installation.hxx"
 
 #include "Module.hxx"
-
-#include "methods/Misc.hxx" 
-#include "methods/Python.hxx"
-
-#include "objects/Console.hxx"
-#include "objects/System.hxx"
 
 class ObjectCreator{
     private:
@@ -71,7 +65,7 @@ class ObjectCreator{
         }
 };
 
-ObjectCreator CreateObject(const char* ObjectName){
+static inline ObjectCreator CreateObject(const char* ObjectName){
     ObjectCreator ObjectCreatorInstance(ZendaIsolate, ObjectName);
     return ObjectCreatorInstance;
 }
@@ -79,38 +73,38 @@ ObjectCreator CreateObject(const char* ObjectName){
 // By declaring the function and 
 // then defining them and not having order 
 // errors due to the use of a functional programming paradigm.
-void CreatheMethod(const char* MethodName, void(*Callback)(const FunctionCallbackInfo<Value>& Arguments));
-void AddCoreJavascriptFile(string Path);
-void CreatePlatform(char* argv[]);
-void Initialize(int argc, char* argv[]);
-bool ExecuteString(Local<String> Source, const char* Filename);
-void Shell(Local<Context> SContext, Platform* SPlatform);
-void ReportException(TryCatch* try_catch);
-void CreateVirtualMachine();
-void CreateGlobalEnvironment();
-void ShutdownVirtualMachine();
-void LoadCoreJavascriptFiles();
-void EngineEnvironMethods();
-void EngineEnvironObjects();
-void EngineEnvironCoreJavascriptFiles();
-Local<Context> CreateLocalContext();
+static inline void CreatheMethod(const char* MethodName, void(*Callback)(const FunctionCallbackInfo<Value>& Arguments));
+static inline void AddCoreJavascriptFile(string Path);
+static inline void CreateGlobalEnvironment();
+static inline Local<Context> CreateLocalContext();
+static void CreatePlatform(char* argv[]);
+static void Initialize(int argc, char* argv[]);
+static bool ExecuteString(Local<String> Source, const char* Filename);
+static void Shell(Local<Context> SContext, Platform* SPlatform);
+static void CreateVirtualMachine();
+static void ShutdownVirtualMachine();
+static void LoadCoreJavascriptFiles();
+static void EngineEnvironMethods();
+static bool ExecuteFile(const char* Filename);
+static void EngineEnvironObjects();
+static void EngineEnvironCoreJavascriptFiles();
 
-void CreateMethod(const char* MethodName, void(*Callback)(const FunctionCallbackInfo<Value>& Arguments)){
+static inline void CreateMethod(const char* MethodName, void(*Callback)(const FunctionCallbackInfo<Value>& Arguments)){
     ZendaGlobal->Set(
         String::NewFromUtf8(ZendaIsolate, MethodName, NewStringType::kNormal).ToLocalChecked(),
         FunctionTemplate::New(ZendaIsolate, Callback)
     );
 }
 
-Local<Context> CreateLocalContext(){
+static inline Local<Context> CreateLocalContext(){
     return Context::New(ZendaIsolate, NULL, ZendaGlobal);
 }
 
-void AddCoreJavascriptFile(string Path){
+static inline void AddCoreJavascriptFile(string Path){
     ZendaJavascriptCoreFiles.push_back(Path);
 }
 
-void CreatePlatform(char* argv[]){
+static void CreatePlatform(char* argv[]){
     V8::InitializeICUDefaultLocation(argv[0]);
     V8::InitializeExternalStartupData(argv[0]);
     ZendaPlatform = platform::NewDefaultPlatform();
@@ -118,20 +112,20 @@ void CreatePlatform(char* argv[]){
     V8::Initialize();
 }
 
-void CreateVirtualMachine(){
+static void CreateVirtualMachine(){
     ZendaCreateParams.array_buffer_allocator = ArrayBuffer::Allocator::NewDefaultAllocator();
     ZendaIsolate = Isolate::New(ZendaCreateParams);
     ZendaIsolate->SetHostImportModuleDynamicallyCallback(CallDynamic);
 }
 
-void ShutdownVirtualMachine(){
+static void ShutdownVirtualMachine(){
     ZendaIsolate->Dispose();
     V8::Dispose();
     V8::ShutdownPlatform();
     delete ZendaCreateParams.array_buffer_allocator;
 }
 
-bool ExecuteString(Local<String> Source, const char* Filename){
+static bool ExecuteString(Local<String> Source, const char* Filename){
     TryCatch try_catch(ZendaIsolate);
     ScriptOrigin origin(
         String::NewFromUtf8(ZendaIsolate, Filename, NewStringType::kNormal).ToLocalChecked()
@@ -154,7 +148,7 @@ bool ExecuteString(Local<String> Source, const char* Filename){
     }
 }
 
-bool ExecuteFile(const char* Filename){
+static bool ExecuteFile(const char* Filename){
     Local<String> Source;
     if(!ReadFileUsingV8(Filename, ZendaIsolate).ToLocal(&Source))
         return false;
@@ -163,50 +157,72 @@ bool ExecuteFile(const char* Filename){
     return true;
 }
 
-void LoadCoreJavascriptFiles(){
+static void LoadCoreJavascriptFiles(Local<Context> LContext){
     EngineEnvironCoreJavascriptFiles();
-
-    for(unsigned short int i = 0; i < ZendaJavascriptCoreFiles.size(); i++)
-        ExecuteFile(ZendaJavascriptCoreFiles.at(i).c_str());
+    string ZendaSRC = ZendaSourceCodeLocation();
+    unsigned short int Iterator = 0;
+    for(Iterator; Iterator < ZendaJavascriptCoreFiles.size(); Iterator++){
+        string FilePath = ZendaSRC + ZendaJavascriptCoreFiles.at(Iterator);
+        const char* File = FilePath.c_str();
+        if(FileExists(File)){
+            char* Contents = ReadFile(strdup(File));
+            Local<Module> LModule = CheckModule(LoadModule(Contents, strdup(File), LContext), LContext);
+            Local<Value> Returned = ExecuteModule(LModule, LContext);
+        }
+    }
 }
 
-void CreateGlobalEnvironment(){
+static inline void CreateGlobalEnvironment(){
     ZendaGlobal = ObjectTemplate::New(ZendaIsolate);
 }
 
-void EngineEnvironMethods(){
-    CreateMethod("version", Version);
-    CreateMethod("creator", Creator);
-    CreateMethod("sleep", Sleep);
-    CreateMethod("pythonString", PythonQuickString);
-    CreateMethod("pythonFile", PythonQuickFile);
-    CreateMethod("pythonFancyFile", PythonFancyFile);
+// Methods
+#include "methods/Misc.hxx" 
+#include "methods/Python.hxx"
+
+// Objects
+#include "objects/Console.hxx"
+#include "objects/System.hxx"
+
+static void EngineEnvironMethods(){
+    CreateMethod("Version", Version);
+    CreateMethod("Creator", Creator);
+    CreateMethod("Sleep", Sleep);
+    CreateMethod("PythonString", PythonQuickString);
+    CreateMethod("PythonFile", PythonQuickFile);
+    CreateMethod("PythonFancyFile", PythonFancyFile);
 }
 
-void EngineEnvironObjects(){
-    CreateObject("console")
-        .SetPropertyMethod("log", ConsoleLog)
-        .SetPropertyMethod("input", ConsoleInput)
-        .SetPropertyMethod("clear", ConsoleClear)
-        .SetPropertyMethod("setColor", ConsoleSetColor)
-        .SetPropertyMethod("setStyle", ConsoleSetStyle)
-        .SetPropertyMethod("setBackground", ConsoleSetBackground)
-        .SetPropertyMethod("getColor", ConsoleGetColor)
-        .SetPropertyMethod("getStyle", ConsoleGetStyle)
-        .SetPropertyMethod("getBackground", ConsoleGetBackground)
+static void EngineEnvironObjects(){
+    CreateObject("Console")
+        .SetPropertyMethod("Log", ConsoleLog)
+        .SetPropertyMethod("Error", ConsoleError)
+        .SetPropertyMethod("Warning", ConsoleWarning)
+        .SetPropertyMethod("Information", ConsoleInformation)
+        .SetPropertyMethod("Success", ConsoleSuccess)
+        .SetPropertyMethod("Input", ConsoleInput)
+        .SetPropertyMethod("Clear", ConsoleClear)
+        .SetPropertyMethod("SetColor", ConsoleSetColor)
+        .SetPropertyMethod("SetStyle", ConsoleSetStyle)
+        .SetPropertyMethod("SetBackground", ConsoleSetBackground)
+        .SetPropertyMethod("GetColor", ConsoleGetColor)
+        .SetPropertyMethod("GetStyle", ConsoleGetStyle)
+        .SetPropertyMethod("GetBackground", ConsoleGetBackground)
         .Register();
 
-    CreateObject("system")
-        .SetPropertyMethod("platform", SystemPlatform)
-        .SetPropertyMethod("execute", SystemExecute)
-        .SetPropertyMethod("arguments", SystemArguments)
+    CreateObject("System")
+        .SetPropertyMethod("Platform", SystemPlatform)
+        .SetPropertyMethod("Execute", SystemExecute)
+        .SetPropertyMethod("Arguments", SystemArguments)
+        .SetPropertyMethod("CurrentWorkingDirectory", SystemCurrentWorkignDirectory)
         .Register();
 }
 
-void EngineEnvironCoreJavascriptFiles(){
+static void EngineEnvironCoreJavascriptFiles(){
 }
 
-void Shell(Local<Context> SContext, Platform* SPlatform){
+static void Shell(Local<Context> SContext, Platform* SPlatform){
+    ClearConsole();
     cout << "ZendaJS<Beta> [" << ZendaVersion << "] - By " << ZendaCreator << "." << endl << "Happy hacking!" << endl << endl;
     static const int kBufferSize = 256;
     Context::Scope context_scope(SContext);
@@ -229,8 +245,10 @@ void Shell(Local<Context> SContext, Platform* SPlatform){
         }
 }
 
-void Initialize(int argc, char* argv[]){
-    bool SomeFileHasBeenExecuted = 0;
+#include "cli/Functions.hxx"
+#include "cli/Arguments.hxx"
+
+static void Initialize(int argc, char* argv[]){
     SetCallArguments(argc, argv);
     CreatePlatform(argv);
     CreateVirtualMachine();
@@ -239,41 +257,17 @@ void Initialize(int argc, char* argv[]){
         HandleScope Scope(ZendaIsolate);
         CreateGlobalEnvironment();
         EngineEnvironMethods();
-        for(unsigned short int i = 1; i < argc; ++i){
-            const char* Argument = argv[i];
-            Local<Context> LContext = CreateLocalContext();
-            Context::Scope ContextScope(LContext);
-            EngineEnvironObjects();
-            LoadCoreJavascriptFiles();
-            if(!strcmp(Argument, "--creator")){
-                cout << ZendaCreator << endl;
-                break;
-            }else if(!strcmp(Argument, "--version")){
-                cout << ZendaVersion << endl;
-                break;
-            }else if(!strcmp(Argument, "--shell")){
-                Shell(LContext, ZendaPlatform.get());
-                break;
-            }else if(!strcmp(Argument, "--install-dependencies")){
-                InstallDependencies();
-                break;
-            }else if(!strcmp(Argument, "--execute")){
-                const char* MaybeFile = argv[i + 1];
-                SomeFileHasBeenExecuted = true;
-                if(FileExists(MaybeFile)){
-                    char* Contents = ReadFile(strdup(MaybeFile));
-                    Local<Module> LModule = CheckModule(LoadModule(Contents, strdup(MaybeFile), LContext), LContext);
-                    Local<Value> Returned = ExecuteModule(LModule, LContext);
-                }else{
-                    cout << "The requested file <" << MaybeFile << "> was not found." << endl;
-                }
-            }else if( (!SomeFileHasBeenExecuted) || (!strcmp(Argument, "--help")) ){
-                ShowHelp();
-                if(!SomeFileHasBeenExecuted){
-                    exit(EXIT_FAILURE);
-                }
+        if(argv[1]){
+            unsigned short int Iterator = 1;
+            for(Iterator; Iterator < argc; ++Iterator){
+                Local<Context> LContext = CreateLocalContext();
+                Context::Scope ContextScope(LContext);
+                EngineEnvironObjects();
+                if(MatchWithArgument(argv[Iterator], LContext, argv[Iterator + 1]))
+                    break;
             }
-        }
+        }else
+            ShowHelp();
     }
 
     ShutdownVirtualMachine();

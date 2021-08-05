@@ -1,12 +1,41 @@
 static void ConsoleLog(const FunctionCallbackInfo<Value>& Arguments){
-    for(unsigned short int i = 0; i < Arguments.Length(); i++){
+    unsigned short int Iterator = 0;
+    for(Iterator; Iterator < Arguments.Length(); Iterator++){
         HandleScope Scope(Arguments.GetIsolate());
-        if(i > 0) cout << " ";
-        String::Utf8Value Text(Arguments.GetIsolate(), Arguments[i]);
+        if(Iterator > 0) cout << " ";
+        String::Utf8Value Text(Arguments.GetIsolate(), Arguments[Iterator]);
         const char* CharText = ToCString(Text);
         cout << CharText;
     }
     cout << endl;
+}
+
+static void ConsoleError(const FunctionCallbackInfo<Value>& Arguments){
+    HandleScope Scope(Arguments.GetIsolate());
+    cout << ConsoleColor("red");
+    ConsoleLog(Arguments);
+    cout << ConsoleStyle("normal");
+}
+
+static void ConsoleWarning(const FunctionCallbackInfo<Value>& Arguments){
+    HandleScope Scope(Arguments.GetIsolate());
+    cout << ConsoleColor("yellow");
+    ConsoleLog(Arguments);
+    cout << ConsoleStyle("normal");
+}
+
+static void ConsoleInformation(const FunctionCallbackInfo<Value>& Arguments){
+    HandleScope Scope(Arguments.GetIsolate());
+    cout << ConsoleColor("beige");
+    ConsoleLog(Arguments);
+    cout << ConsoleStyle("normal");
+}
+
+static void ConsoleSuccess(const FunctionCallbackInfo<Value>& Arguments){
+    HandleScope Scope(Arguments.GetIsolate());
+    cout << ConsoleColor("green");
+    ConsoleLog(Arguments);
+    cout << ConsoleStyle("normal");
 }
 
 static void ConsoleSetColor(const FunctionCallbackInfo<Value>& Arguments){
@@ -81,10 +110,11 @@ static void ConsoleClear(const FunctionCallbackInfo<Value>& Arguments){
 }
         
 static void ConsoleInput(const FunctionCallbackInfo<Value>& Arguments){
-    for(unsigned short int i = 0; i < Arguments.Length(); i++){
+    unsigned short int Iterator = 0;
+    for(Iterator; Iterator < Arguments.Length(); Iterator++){
         HandleScope scope(Arguments.GetIsolate());
-        if(i > 0) cout << " ";
-        String::Utf8Value Text(Arguments.GetIsolate(), Arguments[i]);
+        if(Iterator > 0) cout << " ";
+        String::Utf8Value Text(Arguments.GetIsolate(), Arguments[Iterator]);
         const char* CharText = ToCString(Text);
         cout << CharText;
     }

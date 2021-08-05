@@ -1,9 +1,9 @@
 export const SayHelloWithPython = () => {
-    pythonQuickString("print('Hello world')");
+    PythonString("print('Hello world')");
 }
 
 export const MyVar = "Hello";
 
 export function MyFunction(){
-    console.log('Hello');
+    Console.Log('Hello');
 }

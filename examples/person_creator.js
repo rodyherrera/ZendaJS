@@ -16,34 +16,34 @@ class Person{
 
 };
 
-console.setStyle('bold');
+Console.SetStyle('bold');
 
 var
-    name = console.input('Name -> '),
-    last_name = console.input('Last name -> '),
-    age = console.input('Age -> '),
-    country = console.input('Country -> '),
+    name = Console.Input('Name -> '),
+    last_name = Console.Input('Last name -> '),
+    age = Console.Input('Age -> '),
+    country = Console.Input('Country -> '),
     person = new Person(
         name, last_name, age, country, person,
     );
 
-console.setColor('red');
+    Console.SetColor('red');
 
-console.log(`
+Console.Log(`
 == INFORMATION ==
-${console.getColor('yellow')}
+${console.GetColor('yellow')}
  - -> Name <${person.GetName()}>
  - -> Last name <${person.GetLastName()}>
  - -> Age <${person.GetAge()}>
  - -> Country <${person.GetCountry()}>
-${console.getColor('red')}
+${Console.GetColor('red')}
 == INFORMATION ==
 `);
 
-console.setStyle('normal');
+Console.SetStyle('normal');
 
-var clear_console = console.input('Do you want clear console?[y/N]: ');
+var clear_console = Console.Input('Do you want clear console?[y/N]: ');
 
-if(clear_console.toLowerCase() == 'y') console.clear();
+if(clear_console.toLowerCase() == 'y') Console.Clear();
 
-console.log('Remember drink water!');
+Console.Log('Remember drink water!');

@@ -1,7 +1,8 @@
 static void PythonQuickString(const FunctionCallbackInfo<Value>& Arguments){
-    for(unsigned short int i = 0; i < Arguments.Length(); i++){
+    unsigned short int Iterator = 0;
+    for(Iterator; Iterator < Arguments.Length(); Iterator++){
         HandleScope Scope(Arguments.GetIsolate());
-        String::Utf8Value Code(Arguments.GetIsolate(), Arguments[i]);
+        String::Utf8Value Code(Arguments.GetIsolate(), Arguments[Iterator]);
         char const* CharCode = ToCString(Code);
         Py_Initialize();
             PyRun_SimpleString(CharCode);
@@ -10,15 +11,16 @@ static void PythonQuickString(const FunctionCallbackInfo<Value>& Arguments){
 }
 
 static void PythonQuickFile(const FunctionCallbackInfo<Value>& Arguments){
-    for(unsigned short int i = 0; i < Arguments.Length(); i++){
+    unsigned short int Iterator = 0;
+    for(Iterator; Iterator < Arguments.Length(); Iterator++){
         HandleScope Scope(Arguments.GetIsolate());
-        String::Utf8Value File(Arguments.GetIsolate(), Arguments[i]);
+        String::Utf8Value File(Arguments.GetIsolate(), Arguments[Iterator]);
         char const* CharFile = ToCString(File);
         Py_Initialize();
             FILE* PyFile;
             PyFile = fopen(CharFile, "r");
             if(PyFile == NULL)
-                cout << "ZendaJS -> An error ocurred while trying open <" << CharFile << "> in pythonFile() function." << endl;
+                cout << "An error ocurred while trying open <" << CharFile << ">." << endl;
             else
                 PyRun_SimpleFile(PyFile, CharFile);
             fclose(PyFile);
@@ -27,9 +29,10 @@ static void PythonQuickFile(const FunctionCallbackInfo<Value>& Arguments){
 }
 
 static void PythonFancyFile(const FunctionCallbackInfo<Value>& Arguments){
-    for(unsigned short int i = 0; i < Arguments.Length(); i++){
+    unsigned short int Iterator = 0;
+    for(Iterator; Iterator < Arguments.Length(); Iterator++){
         HandleScope Scope(Arguments.GetIsolate());
-        String::Utf8Value File(Arguments.GetIsolate(), Arguments[i]);
+        String::Utf8Value File(Arguments.GetIsolate(), Arguments[Iterator]);
         char const* CharFile = ToCString(File);
         ExecutePythonFileFromNative(CharFile);
     }

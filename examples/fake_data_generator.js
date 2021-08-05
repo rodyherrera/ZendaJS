@@ -15,33 +15,33 @@ class FakerGenerator{
     file_name = undefined;
 
     Init = () => {
-        console.clear();
-        console.log(Lang.DependenciesWarn);
+        Console.Clear();
+        Console.Log(Lang.DependenciesWarn);
     }
 
     InstallDependencies = () => {
-        sleep(5);
+        Sleep(5);
         // InstallingFaker library
-        system.execute('python3 -m pip install Faker');
+        System.Execute('python3 -m pip install Faker');
     }
 
     DataInput = () => {
-        console.clear();
+        Console.Clear();
 
-        this.amount_of_data = parseInt(console.input(Lang.DataAmount)),
+        this.amount_of_data = parseInt(Console.Input(Lang.DataAmount)),
         
-        this.save_in_file = console.input('\n' + Lang.SaveInFileQuery),
+        this.save_in_file = Console.Input('\n' + Lang.SaveInFileQuery),
 
         this.file_name = this.save_in_file.toLowerCase() == 'y' ?
-            console.input('\n' + Lang.FileName)
+            Console.Input('\n' + Lang.FileName)
         :
             0;
         
-        console.clear();
+        Console.Clear();
     }
 
     // Using PythonString
-    DataOutput = () => pythonString(`
+    DataOutput = () => PythonString(`
 from faker import Faker
 from faker.providers import internet
 

@@ -3,7 +3,7 @@ import { SayHelloWithPython, MyVar, MyFunction } from "./examples/import/library
 
 SayHelloWithPython(); // Calling the function from other file =D
 
-console.log(MyVar);
+Console.Log(MyVar);
 
 MyFunction();
 
@@ -12,7 +12,7 @@ import('./examples/import/library.js')
     .then((module) => {
         module.SayHelloWithPython(); // Calling the function using module parameter =D
     
-        console.log(module.MyVar);
+        Console.Log(module.MyVar);
         
         MyFunction();
     });

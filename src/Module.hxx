@@ -1,11 +1,10 @@
-#include <iostream>
-#include <v8.h>
-using namespace v8;
-using namespace std;
+static MaybeLocal<Module> LoadModule(char Code[], char Name[], Local<Context> MContext);
+static Local<Module> CheckModule(MaybeLocal<Module> MaybeModule, Local<Context> MContext);
+static Local<Value> ExecuteModule(Local<Module> LModule, Local<Context> MContext, bool NsObject);
+static inline MaybeLocal<Module> CallResolve(Local<Context> MContext, Local<String> Specifier, Local<Module> Referrer);
+static MaybeLocal<Promise> CallDynamic(Local<Context> MContext, Local<ScriptOrModule> Referrer, Local<String> Specifier);
 
-MaybeLocal<Module> CallResolve(Local<Context> MContext, Local<String> Specifier, Local<Module> Referrer);
-
-MaybeLocal<Module> LoadModule(char Code[], char Name[], Local<Context> MContext){
+static MaybeLocal<Module> LoadModule(char Code[], char Name[], Local<Context> MContext){
     Local<String> VMCode = String::NewFromUtf8(MContext->GetIsolate(), Code).ToLocalChecked();
     ScriptOrigin Origin(
         String::NewFromUtf8(MContext->GetIsolate(), Name).ToLocalChecked(),
@@ -25,7 +24,7 @@ MaybeLocal<Module> LoadModule(char Code[], char Name[], Local<Context> MContext)
     return LModule;
 }
 
-Local<Module> CheckModule(MaybeLocal<Module> MaybeModule, Local<Context> MContext){
+static Local<Module> CheckModule(MaybeLocal<Module> MaybeModule, Local<Context> MContext){
     Local<Module> LModule;
     if(!MaybeModule.ToLocal(&LModule)){
         exit(EXIT_FAILURE);
@@ -38,7 +37,7 @@ Local<Module> CheckModule(MaybeLocal<Module> MaybeModule, Local<Context> MContex
     return LModule;
 }
 
-Local<Value> ExecuteModule(Local<Module> LModule, Local<Context> MContext, bool NsObject = false){
+static Local<Value> ExecuteModule(Local<Module> LModule, Local<Context> MContext, bool NsObject = false){
     Local<Value> ReturnValue;
     if(!LModule->Evaluate(MContext).ToLocal(&ReturnValue)){
         exit(EXIT_FAILURE);
@@ -49,12 +48,12 @@ Local<Value> ExecuteModule(Local<Module> LModule, Local<Context> MContext, bool 
         return ReturnValue;
 }
 
-MaybeLocal<Module> CallResolve(Local<Context> MContext, Local<String> Specifier, Local<Module> Referrer){
+static inline MaybeLocal<Module> CallResolve(Local<Context> MContext, Local<String> Specifier, Local<Module> Referrer){
     String::Utf8Value Str(MContext->GetIsolate(), Specifier);
     return LoadModule(ReadFile(*Str), *Str, MContext);
 }
 
-MaybeLocal<Promise> CallDynamic(Local<Context> MContext, Local<ScriptOrModule> Referrer, Local<String> Specifier){
+static MaybeLocal<Promise> CallDynamic(Local<Context> MContext, Local<ScriptOrModule> Referrer, Local<String> Specifier){
     Local<Promise::Resolver> Resolver = Promise::Resolver::New(MContext).ToLocalChecked();
     MaybeLocal<Promise> LPromise(Resolver->GetPromise());
     String::Utf8Value Name(MContext->GetIsolate(), Specifier);

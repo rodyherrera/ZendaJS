@@ -1,9 +1,9 @@
-static void Version(const FunctionCallbackInfo<Value>& Arguments){
+static inline void Version(const FunctionCallbackInfo<Value>& Arguments){
     HandleScope Scope(Arguments.GetIsolate());
     cout << ZendaVersion << endl;
 }
 
-static void Creator(const FunctionCallbackInfo<Value>& Arguments){
+static inline void Creator(const FunctionCallbackInfo<Value>& Arguments){
     HandleScope Scope(Arguments.GetIsolate());
     cout << ZendaCreator << endl;
 }
