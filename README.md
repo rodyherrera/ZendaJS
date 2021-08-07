@@ -19,24 +19,24 @@ When you run (./Zenda install-it) you will install the necessary dependencies an
 
 ## Usage
 
-To use ZendaJS you need to execute the file [Zenda] that was generated once the makefile was executed, when you execute the file [Zenda] you must indicate the address of the JavaScript file you want to execute, for example [Zenda run my_script.js],
+To use ZendaJS you need to execute the file [Zenda] that was generated once the makefile was executed, when you execute the file [Zenda] you must indicate the address of the JavaScript file you want to execute, for example [./Zenda run my_script.js],
 In case an error occurs in the execution or the file does not exist, this will be reported in the console, you have example files in the examples folder with the functions that ZendaJS has.
 
 Executable commands
 ```bash
 ./Zenda install-it # For install Zenda (From source code directory)
-Zenda --help # For get help about valid arguments for executable
-Zenda --version # For get current version
-Zenda --creator # For get creator information
-Zenda shell # For run Zenda Shell <Like Browser JS Console>
-Zenda run my_folder/my_file.js # For run javascript files
+./Zenda --help # For get help about valid arguments for executable
+./Zenda --version # For get current version
+./Zenda --creator # For get creator information
+./Zenda shell # For run Zenda Shell <Like Browser JS Console>
+./Zenda run my_folder/my_file.js # For run javascript files
 ```
 
 Using example file from source code directoryy
 ```bash
-Zenda run examples/computer.js
+./Zenda run examples/computer.js
 OR
-Zenda your_javascript_file_location.js
+./Zenda your_javascript_file_location.js
 ```
 
 ## Contributing
