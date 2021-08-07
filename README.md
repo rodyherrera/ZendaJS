@@ -6,9 +6,6 @@ Zenda not only allows you to run Javascript, but it also allows you to include P
 
 ## Installation
 
-To install Zenda you need to clone the GitHub repository [git clone https://github.com/RodiiHernandezz/ZendaJS],
-once cloned you must access the directory that was generated [cd ZendaJS] and finally open the terminal and execute the makefile [make].
-
 ```bash
 git clone https://github.com/RodiiHernandezz/ZendaJS
 cd ZendaJS
@@ -21,9 +18,9 @@ Or you can use
 git clone https://github.com/RodiiHernandezz/ZendaJS && cd ZendaJS && export PATH=$PATH:`pwd` && Zenda install-it
 ```
 
-In case when executing the already compiled Zenda file you get an error, you can try building Zenda again, using the [make] command, the only thing you need to have installed to build Zenda is the python3.8-dev library or python3.8 :).
+In case when executing the already compiled Zenda file you get an error, you can try building Zenda again, using the [make] command.
 
-When you run (./Zenda install-it) you will install the necessary dependencies and the executable will be added to the PATH of your system, so that you can run Zenda from anywhere on your computer without having to work with the source code, you can compile the I code using the make command from the directory where you have the code.
+When you run (Zenda install-it) you will install the necessary dependencies and the executable will be added to the PATH of your system, so that you can run Zenda from anywhere on your computer without having to work with the source code, you can compile the I code using the make command from the directory where you have the code.
 
 ## For build
 Installing the packages needed to build...
