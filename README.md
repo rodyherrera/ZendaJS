@@ -24,6 +24,31 @@ In case when executing the already compiled Zenda file you get an error, you can
 
 When you run (./Zenda install-it) you will install the necessary dependencies and the executable will be added to the PATH of your system, so that you can run Zenda from anywhere on your computer without having to work with the source code, you can compile the I code using the make command from the directory where you have the code.
 
+## For build
+Installing the packages needed to build...
+```
+
+```bash
+sudo apt-get install make # For use makefile
+sudo apt-get install g++ # For compile
+sudo apt-get install python3 # For -lpython3.8 flag
+```
+Or
+```bash
+sudo apt-get install make && apt-get install g++ && apt-get install python3
+```
+
+If you have MacOS (Not tested)
+```bash
+brew install make # For use makefile
+brew install gcc # For compile, if it dont work use g++
+brew install python3 # For -lpython3.8 flag
+```
+Or 
+```bash
+brew install make && brew install gcc && brew install python3
+```
+  
 ## Usage
 
 To use ZendaJS you need to execute the file [Zenda] that was generated once the makefile was executed, when you execute the file [Zenda] you must indicate the address of the JavaScript file you want to execute, for example [./Zenda run my_script.js],
