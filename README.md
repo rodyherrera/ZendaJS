@@ -26,7 +26,6 @@ When you run (./Zenda install-it) you will install the necessary dependencies an
 
 ## For build
 Installing the packages needed to build...
-```
 
 ```bash
 sudo apt-get install make # For use makefile
