@@ -1,4 +1,4 @@
-const char* ZendaVersion = "1.0.4";
+const char* ZendaVersion = "1.0.5";
 const char* ZendaCreator = "Rodolfo Herrera Hernandez";
 
 string WorkingDirectory;
