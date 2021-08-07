@@ -15,6 +15,13 @@ cd ZendaJS
 ./Zenda install-it
 ```
 
+Or you can use
+```bash
+git clone https://github.com/RodiiHernandezz/ZendaJS && cd ZendaJS && ./Zenda install-it
+```
+
+In case when executing the already compiled Zenda file you get an error, you can try building Zenda again, using the [make] command, the only thing you need to have installed to build Zenda is the python3.8-dev library or python3.8 :).
+
 When you run (./Zenda install-it) you will install the necessary dependencies and the executable will be added to the PATH of your system, so that you can run Zenda from anywhere on your computer without having to work with the source code, you can compile the I code using the make command from the directory where you have the code.
 
 ## Usage
