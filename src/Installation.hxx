@@ -4,6 +4,7 @@ static void StartUsingZenda();
 static inline void ExportPath();
 
 static inline void ExportPath(){
+   // DONT WORK, EXPORT PATH AUTOMATICALLY FOR USE ZENDA WITHOUT WORK WITH SOURCE CODE DIRECTORY.
    string ExportPathCommand = "export PATH=$PATH:" + CurrentWorkingDirectory();
    system(ExportPathCommand.c_str());
 }
@@ -38,7 +39,8 @@ static void InstallZenda(){
    getline(cin, Answer);
    Answer = StringToUpper(Answer);
    if(Answer == "Y"){
-      ExportPath();
+      // THIS FUNCTION DOESNT WORK.
+      // ExportPath();
       InstallDependencies();
    }else{
       ClearConsole();
