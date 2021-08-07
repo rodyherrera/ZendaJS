@@ -12,12 +12,13 @@ once cloned you must access the directory that was generated [cd ZendaJS] and fi
 ```bash
 git clone https://github.com/RodiiHernandezz/ZendaJS
 cd ZendaJS
-./Zenda install-it
+export PATH=$PATH:`pwd`
+Zenda install-it
 ```
 
 Or you can use
 ```bash
-git clone https://github.com/RodiiHernandezz/ZendaJS && cd ZendaJS && ./Zenda install-it
+git clone https://github.com/RodiiHernandezz/ZendaJS && cd ZendaJS && export PATH=$PATH:`pwd` && Zenda install-it
 ```
 
 In case when executing the already compiled Zenda file you get an error, you can try building Zenda again, using the [make] command, the only thing you need to have installed to build Zenda is the python3.8-dev library or python3.8 :).
@@ -47,7 +48,6 @@ Or
 ```bash
 brew install make && brew install gcc && brew install python3
 ```
-  
 ## Usage
 
 To use ZendaJS you need to execute the file [Zenda] that was generated once the makefile was executed, when you execute the file [Zenda] you must indicate the address of the JavaScript file you want to execute, for example [./Zenda run my_script.js],
@@ -55,19 +55,19 @@ In case an error occurs in the execution or the file does not exist, this will b
 
 Executable commands
 ```bash
-./Zenda install-it # For install Zenda (From source code directory)
-./Zenda --help # For get help about valid arguments for executable
-./Zenda --version # For get current version
-./Zenda --creator # For get creator information
-./Zenda shell # For run Zenda Shell <Like Browser JS Console>
-./Zenda run my_folder/my_file.js # For run javascript files
+Zenda install-it # For install Zenda dependencies
+Zenda --help # For get help about valid arguments for executable
+Zenda --version # For get current version
+Zenda --creator # For get creator information
+Zenda shell # For run Zenda Shell <Like Browser JS Console>
+Zenda run my_folder/my_file.js # For run javascript files
 ```
 
 Using example file from source code directoryy
 ```bash
-./Zenda run examples/computer.js
+Zenda run examples/computer.js
 OR
-./Zenda your_javascript_file_location.js
+Zenda your_javascript_file_location.js
 ```
 
 ## Contributing
