@@ -10,7 +10,7 @@ static inline bool FileExists(const string& Filename);
 static string CurrentWorkingDirectoryInScript(const char* Script);
 static string GetStdoutFromCommand(string Command);
 static string ZendaSourceCodeLocation();
-static void ExecutePythonFileFromnative(const char* CharFile);
+static void ExecutePythonFileFromNative(const char* CharFile);
 static char* ReadFile(char Filename[]);
 static MaybeLocal<String> ReadFileUsingV8(const char* Filename, Isolate*);
 static void ReportException(TryCatch* try_catch);
