@@ -64,7 +64,7 @@ Using example file from source code directory
 ```bash
 Zenda run examples/computer.js
 OR
-Zenda your_javascript_file_location.js
+Zenda run your_javascript_file_location.js
 ```
 
 ## Contributing
