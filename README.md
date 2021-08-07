@@ -63,7 +63,7 @@ Zenda shell # For run Zenda Shell <Like Browser JS Console>
 Zenda run my_folder/my_file.js # For run javascript files
 ```
 
-Using example file from source code directoryy
+Using example file from source code directory
 ```bash
 Zenda run examples/computer.js
 OR
