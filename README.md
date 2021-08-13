@@ -53,11 +53,14 @@ In case an error occurs in the execution or the file does not exist, this will b
 Executable commands
 ```bash
 Zenda install-it # For install Zenda dependencies
-Zenda --help # For get help about valid arguments for executable
-Zenda --version # For get current version
-Zenda --creator # For get creator information
+Zenda help # For get help about valid arguments for executable
+Zenda version # For get current version
+Zenda creator # For get creator information
 Zenda shell # For run Zenda Shell <Like Browser JS Console>
 Zenda run my_folder/my_file.js # For run javascript files
+Zenda init # For create a Zenda project
+Zenda about # For get information about project
+Zenda command <mode> # For execute command of some project
 ```
 
 Using example file from source code directory
