@@ -39,11 +39,11 @@ If you have MacOS (Not tested)
 ```bash
 brew install make # For use makefile
 brew install gcc # For compile, if it dont work use g++
-brew install python # For -lpython3.8 flag
+brew install python3 # For -lpython3.8 flag
 ```
 Or 
 ```bash
-brew install make && brew install gcc && brew install python
+brew install make && brew install gcc && brew install python3
 ```
 ## Usage
 
