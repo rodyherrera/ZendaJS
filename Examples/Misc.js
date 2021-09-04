@@ -20,4 +20,4 @@ Creator();
 Version();
 
 // Executing again this file.
-ExecuteJavascriptFile('Misc.js')
+ExecuteJavascriptFile('Examples/Computer.js')

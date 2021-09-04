@@ -13,7 +13,8 @@
 CXX = g++
 OUTPUT = Zenda
 V8 = Libraries/V8
-PYTHON_INTEGRATION = -I Libraries/Python3.8 -lpython3.8
+INCLUDES = -I Libraries/Python3.8
+FLAGS = -lpython3.8
 
 define INCLUDE
 	$(V8)/include
@@ -37,4 +38,4 @@ export LIB
 export OBJ
 
 build:
-	$(CXX) -I $$INCLUDE $$APP -L $$LIB -l $$OBJ -lstdc++fs -std=c++0x -pthread -o $(OUTPUT) $(PYTHON_INTEGRATION) -DV8_COMPRESS_POINTERS
+	$(CXX) -I $$INCLUDE $$APP -L $$LIB -l $$OBJ -lstdc++fs -std=c++17 -pthread -o $(OUTPUT) $(INCLUDES) $(FLAGS) -DV8_COMPRESS_POINTERS

@@ -29,9 +29,9 @@ Your message is {MESSAGE} and it contains {len(MESSAGE)} characteres!
 PythonString(Code);
 
 // Calling Python File
-PythonFile('examples/PyIntegrationExample.py')
+PythonFile('Examples/PyIntegrationExample.py')
 
 // You need enter exact python file location :)
 
 // Use pythonFancyFile for get better perfomance, u need python in your OS.
-PythonFancyFile('examples/PyIntegrationExample.py')
+PythonFancyFile('Examples/PyIntegrationExample.py')

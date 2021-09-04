@@ -43,7 +43,7 @@ var
 
 Console.Log(`
 == INFORMATION ==
-${console.GetColor('yellow')}
+${Console.GetColor('yellow')}
  - -> Name <${person.GetName()}>
  - -> Last name <${person.GetLastName()}>
  - -> Age <${person.GetAge()}>

@@ -202,14 +202,14 @@ static void ReportException(TryCatch* try_catch){
         int LineNumber = message->GetLineNumber(
             ZendaIsolate->GetCurrentContext()
         ).FromJust();
-        cout << "ZendaJS [Error in line " << to_string(LineNumber) << "] - [" << FilenameString << "]" << endl;
-        cout << endl << "-> " << ExceptionString << endl << endl;
+        cout << endl << " ZendaJS Engine Runtime -> [Error in line " << to_string(LineNumber) << "] - [" << FilenameString << "]" << endl;
+        cout << endl << " -> " << ExceptionString << endl << endl;
         String::Utf8Value SourceLine(
             ZendaIsolate,
                 message->GetSourceLine(ZendaIsolate->GetCurrentContext()).ToLocalChecked()
             );
         const char* SourceLineString = ToCString(SourceLine);
-        cout << SourceLineString << endl;
+        cout << " " << SourceLineString << endl;
         unsigned int 
             Start = message->GetStartColumn(
                 ZendaIsolate->GetCurrentContext()
@@ -223,7 +223,7 @@ static void ReportException(TryCatch* try_catch){
             for(Iterator; Iterator < Start; Iterator++) 
                 fprintf(stderr, " ");
             for(Jterator; Jterator < End; Jterator++)
-                fprintf(stderr, "^");
+                fprintf(stderr, " ^");
             cout << endl;
         }
 }

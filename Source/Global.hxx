@@ -17,11 +17,10 @@
  * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  ****/
 
-const char* ZendaVersion = "1.0.6";
-const char* ZendaCreator = "Rodolfo Herrera Hernandez";
+#define ZendaVersion "1.0.7"
+#define ZendaCreator "Rodolfo Herrera Hernandez"
 
-string WorkingDirectory;
-
+string WorkingDirectory = "", PackagesFolder = "Packages/";
 vector<string> CallArguments;
 
 Isolate* ZendaIsolate;

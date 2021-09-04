@@ -51,25 +51,30 @@ static const char* GetNextArgument(const char* CurrentArgument){
 }
 
 static void MatchWithArgument(Local<Context> LContext){
-    for(auto&Argument : CallArguments){
-        const char* CharArgument = Argument.c_str();
-        if(!strcmp(CharArgument, "creator"))
-            CreatorArgument();
-        else if(!strcmp(CharArgument, "version"))
-            VersionArgument();
-        else if(!strcmp(CharArgument, "shell"))
-            ShellArgument(LContext);
-        else if(!strcmp(CharArgument, "command"))
-            CommandArgument(LContext, GetNextArgument(CharArgument));
-        else if(!strcmp(CharArgument, "init"))
-            InitArgument(LContext);
-        else if(!strcmp(CharArgument, "about"))
-            AboutArgument(LContext);
-        else if(!strcmp(CharArgument, "install-it"))
-            InstallItArgument();
-        else if(!strcmp(CharArgument, "run"))
-            RunArgument(LContext, GetNextArgument(CharArgument));
-        else
-            NotValidArgument();
-    }
+    if(CallArguments.size() >= 1)
+        for(auto&Argument : CallArguments){
+            const char* CharArgument = Argument.c_str();
+            if(!strcmp(CharArgument, "creator"))
+                CreatorArgument();
+            else if(!strcmp(CharArgument, "version"))
+                VersionArgument();
+            else if(!strcmp(CharArgument, "shell"))
+                ShellArgument(LContext);
+            else if(!strcmp(CharArgument, "command"))
+                CommandArgument(LContext, GetNextArgument(CharArgument));
+            else if(!strcmp(CharArgument, "init"))
+                InitArgument(LContext);
+            else if(!strcmp(CharArgument, "about"))
+                AboutArgument(LContext);
+            else if(!strcmp(CharArgument, "install-it"))
+                InstallItArgument();
+            else if(!strcmp(CharArgument, "run"))
+                RunArgument(LContext, GetNextArgument(CharArgument));
+            else if(!strcmp(CharArgument, "run-examples"))
+                RunExamples(LContext);
+            else
+                NotValidArgument();
+        }
+    else
+       NotValidArgument();
 }

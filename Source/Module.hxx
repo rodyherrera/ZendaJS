@@ -42,20 +42,32 @@ static MaybeLocal<Module> LoadModule(char Code[], char Name[], Local<Context> MC
 
 static Local<Module> CheckModule(MaybeLocal<Module> MaybeModule, Local<Context> MContext){
     Local<Module> LModule;
-    if(!MaybeModule.ToLocal(&LModule))
-        ExitFailure();
+    TryCatch try_catch(MContext->GetIsolate());
+    if(!MaybeModule.ToLocal(&LModule)){
+        assert(try_catch.HasCaught());
+        ReportException(&try_catch);
+        exit(EXIT_FAILURE);
+    }
     Maybe<bool> Result = LModule->InstantiateModule(MContext, CallResolve);
     if(Result.IsNothing()){
+        assert(try_catch.HasCaught());
+        ReportException(&try_catch);
         cout << "An error occurred while loading the modules." << endl;
-        ExitFailure();
+        exit(EXIT_FAILURE);
     }
+    assert(!try_catch.HasCaught());
     return LModule;
 }
 
 static Local<Value> ExecuteModule(Local<Module> LModule, Local<Context> MContext, bool NsObject = false){
     Local<Value> ReturnValue;
-    if(!LModule->Evaluate(MContext).ToLocal(&ReturnValue))
-        ExitFailure();
+    TryCatch try_catch(MContext->GetIsolate());
+    if(!LModule->Evaluate(MContext).ToLocal(&ReturnValue)){
+        assert(try_catch.HasCaught());
+        ReportException(&try_catch);
+        exit(EXIT_FAILURE);
+    }
+    assert(!try_catch.HasCaught());
     if(NsObject)
         return LModule->GetModuleNamespace();
     else
@@ -64,7 +76,15 @@ static Local<Value> ExecuteModule(Local<Module> LModule, Local<Context> MContext
 
 static inline MaybeLocal<Module> CallResolve(Local<Context> MContext, Local<String> Specifier, Local<Module> Referrer){
     String::Utf8Value Str(MContext->GetIsolate(), Specifier);
-    return LoadModule(strdup(FSReadFile(*Str)), *Str, MContext);
+    if(FSFileExists(*Str))
+        return LoadModule(strdup(FSReadFile(*Str)), *Str, MContext);
+    else if(FSFileExists(PackagesFolder + *Str)){
+        string MaybePackageModule = PackagesFolder + *Str;
+        return LoadModule(strdup(FSReadFile(MaybePackageModule.c_str())), strdup(MaybePackageModule.c_str()), MContext);
+    }else{
+        string MaybeSourceCodeModule = ZendaSourceCodeLocation() + "/" + string(ToCString(Str));
+        return LoadModule(strdup(FSReadFile(MaybeSourceCodeModule.c_str())), strdup(MaybeSourceCodeModule.c_str()), MContext);
+    }
 }
 
 static MaybeLocal<Promise> CallDynamic(Local<Context> MContext, Local<ScriptOrModule> Referrer, Local<String> Specifier){

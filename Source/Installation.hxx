@@ -14,20 +14,23 @@
  * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  ****/
 
-static map<string, string> GetNecessaryPackages();
+static vector<string> GetNecessaryPackages();
 static void InstallNecessaryPackages();
 static void InstallZendaJS();
 static void EndZendaInstallation();
 
-static map<string, string> GetNecessaryPackages(){
-   map<string, string> Packages;
+static vector<string> GetNecessaryPackages(){
+   vector<string> Packages;
    const char* OS = OperativeSystem();
    if(!strcmp("LINUX", OS)){
-      Packages["python3"] = "sudo apt-get install python3";
-      Packages["python-pip"] = "sudo apt-get install python3-pip";
+      Packages.push_back("sudo apt-get install python3");
+      Packages.push_back("sudo apt-get install python3-pip");
+      Packages.push_back("pip install python3-tk");
    }else if(!strcmp("APPLE", OS)){
-      Packages["python"] = "brew install python";
+      Packages.push_back("brew install python");
+      Packages.push_back("brew install python-tk");
    }
+   Packages.push_back("pip install turtle");
    return Packages;
 }
 
@@ -65,19 +68,21 @@ static void InstallZendaJS(){
          InstallNecessaryPackages();
       else{
          cout << "Remember drink much water!" << endl;
-         ExitSucces();
+         exit(EXIT_SUCCESS);
       }
    }else{
       cout << "Not Supported Operative System." << endl;
-      ExitFailure();
+      exit(EXIT_FAILURE);
    }
 }
 
 static void InstallNecessaryPackages(){
-   map<string, string> Packages = GetNecessaryPackages();
-   for(auto &PackageIterator: Packages){
-      cout << endl << " * Installing -> " << PackageIterator.first << endl << endl;
-      system(PackageIterator.second.c_str());
+   vector<string> Packages = GetNecessaryPackages();
+   unsigned short int Iterator = 0;
+   for(Iterator; Iterator < Packages.size(); Iterator++){
+      const char* CurrentPackage = Packages.at(Iterator).c_str();
+      cout << endl << " * Installing -> " << CurrentPackage << endl << endl;
+      system(CurrentPackage);
       ClearConsole();
    }
    EndZendaInstallation();
@@ -118,6 +123,7 @@ static void EndZendaInstallation(){
    - Zenda command <mode> (Run command defined in <Project>.json)
 
  * Happy hacking and drink water.
-   - Software developed by Rodolfo Herrera Hernandez
-   - https://github.com/rodiihernandezz/)""" << endl;
+   - https://codewithrodi.com/
+   - contact@codewithrodi.com
+   - https://github.com/rodiihernandezz/ZendaJS/)""" << endl;
 }

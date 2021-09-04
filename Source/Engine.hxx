@@ -21,14 +21,16 @@
 #include <v8.h>
 #include <libplatform/libplatform.h>
 
-#ifdef __WIN32
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 	#include <Windows.h>
 #else
 	#include <unistd.h>
 #endif
 
-#define PY_SSIZE_T_CLEAN
-#include <Python.h>
+#if __APPLE__ || __linux__ || __unix__ || defined(_POSIX_VERSION)
+    #define PY_SSIZE_T_CLEAN
+    #include <Python.h>
+#endif
 
 // Utils folder files libraries used.
 #include <cassert>
@@ -185,24 +187,90 @@ static inline void CreateGlobalEnvironment(){
 
 // Methods
 #include "Methods/Misc.hxx" 
-#include "Methods/Python.hxx"
+#if __APPLE__ || __linux__ || __unix__ || defined(_POSIX_VERSION)
+    #include "Methods/Python.hxx"
+#endif
 
 static void EngineEnvironMethods(){
     CreateMethod("ExecuteJavascriptFile", ExecuteJavascriptFile);
     CreateMethod("Version", Version);
     CreateMethod("Creator", Creator);
     CreateMethod("Sleep", Sleep);
-    CreateMethod("PythonString", PythonQuickString);
-    CreateMethod("PythonFile", PythonQuickFile);
-    CreateMethod("PythonFancyFile", PythonFancyFile);
+    #if __APPLE__ || __linux__ || __unix__ || defined(_POSIX_VERSION)
+        CreateMethod("PythonString", PythonQuickString);
+        CreateMethod("PythonFile", PythonQuickFile);
+        CreateMethod("PythonFancyFile", PythonFancyFile);
+    #endif
 }
 
 // Objects
 #include "Objects/Console.hxx"
 #include "Objects/System.hxx"
 #include "Objects/FileSystem.hxx"
+#include "Objects/PyTurtle.hxx"
 
 static void EngineEnvironObjects(){
+    #if __APPLE__ || __linux__ || __unix__ || defined(_POSIX_VERSION)
+        CreateObject("PyTurtle")
+            .SetPropertyMethod("Write", PyTurtleWrite)
+            .SetPropertyMethod("Forward", PyTurtleForward)
+            .SetPropertyMethod("Backward", PyTurtleBackward)
+            .SetPropertyMethod("Right", PyTurtleRight)
+            .SetPropertyMethod("Left", PyTurtleLeft)
+            .SetPropertyMethod("GoTo", PyTurtleGoTo)
+            .SetPropertyMethod("SetX", PyTurtleSetX)
+            .SetPropertyMethod("SetY", PyTurtleSetY)
+            .SetPropertyMethod("SetHeading", PyTurtleSetHeading)
+            .SetPropertyMethod("Home", PyTurtleHome)
+            .SetPropertyMethod("Circle", PyTurtleCircle)
+            .SetPropertyMethod("Dot", PyTurtleDot)
+            .SetPropertyMethod("Stamp", PyTurtleStamp)
+            .SetPropertyMethod("ClearStamps", PyTurtleClearStamps)
+            .SetPropertyMethod("Undo", PyTurtleUndo)
+            .SetPropertyMethod("Speed", PyTurtleSpeed)
+            .SetPropertyMethod("Toward", PyTurtleTowards)
+            .SetPropertyMethod("Distance", PyTurtleDistance)
+            .SetPropertyMethod("Degress", PyTurtleDegress)
+            .SetPropertyMethod("PenDown", PyTurtlePenDown)
+            .SetPropertyMethod("PenUp", PyTurtlePenUp)
+            .SetPropertyMethod("PenSize", PyTurtlePenSize)
+            .SetPropertyMethod("PenColor", PyTurtlePenColor)
+            .SetPropertyMethod("FillColor", PyTurtleFillColor)
+            .SetPropertyMethod("BeginFill", PyTurtleBeginFill)
+            .SetPropertyMethod("EndFill", PyTurtleEndFill)
+            .SetPropertyMethod("Reset", PyTurtleReset)
+            .SetPropertyMethod("Clear", PyTurtleClear)
+            .SetPropertyMethod("ShowTurtle", PyTurtleShowTurtle)
+            .SetPropertyMethod("HideTurtle", PyTurtleHideTurtle)
+            .SetPropertyMethod("Shape", PyTurtleShape)
+            .SetPropertyMethod("ResizeMode", PyTurtleResizeMode)
+            .SetPropertyMethod("ShapeSize", PyTurtleShapeSize)
+            .SetPropertyMethod("ShearFactor", PyTurtleShearFactor)
+            .SetPropertyMethod("Tilt", PyTurtleTilt)
+            .SetPropertyMethod("SetTiltAngle", PyTurtleSetTiltAngle)
+            .SetPropertyMethod("Mode", PyTurtleMode)
+            .SetPropertyMethod("ShapeTransform", PyTurtleShapeTransform)
+            .SetPropertyMethod("BeginPoly", PyTurtleBeginPoly)
+            .SetPropertyMethod("EndPoly", PyTurtleEndPoly)
+            .SetPropertyMethod("WindowBackgroundColor", PyTurtleWindowBackgroundColor)
+            .SetPropertyMethod("WindowBackgroundImage", PyTurtleWindowBackgroundImage)
+            .SetPropertyMethod("WindowClearScreen", PyTurtleWindowClearScreen)
+            .SetPropertyMethod("WindowResetScreen", PyTurtleWindowResetScreen)
+            .SetPropertyMethod("WindowSize", PyTurtleWindowSize)
+            .SetPropertyMethod("WindowSetWorldCoordinates", PyTurtleWindowSetWorldCoordinates)
+            .SetPropertyMethod("WindowDelay", PyTurtleWindowDelay)
+            .SetPropertyMethod("WindowColorMode", PyTurtleWindowColorMode)
+            .SetPropertyMethod("WindowTracer", PyTurtleWindowTracer)
+            .SetPropertyMethod("WindowUpdate", PyTurtleWindowUpdate)
+            .SetPropertyMethod("WindowBye", PyTurtleWindowBye)
+            .SetPropertyMethod("WindowExitOnClick", PyTurtleWindowExitOnClick)
+            .SetPropertyMethod("WindowTitle", PyTurtleWindowTitle)
+            .SetPropertyMethod("Execute", PyTurtleExecute)
+            .SetPropertyMethod("ClearCodeBuffer", PyTurtleClearCodeBuffer)
+            .SetPropertyMethod("Initialize", PyTurtleInitialize)
+            .Register();
+        #endif
+
     CreateObject("Console")
         .SetPropertyMethod("Log", ConsoleLog)
         .SetPropertyMethod("Error", ConsoleError)
@@ -220,6 +288,8 @@ static void EngineEnvironObjects(){
         .Register();
 
     CreateObject("System")
+        .SetPropertyMethod("SourceCodeLocation", SystemSourceCodeLocation)
+        .SetPropertyMethod("CommandOutput", SystemCommandOutput)
         .SetPropertyMethod("Platform", SystemPlatform)
         .SetPropertyMethod("Execute", SystemExecute)
         .SetPropertyMethod("Arguments", SystemArguments)
@@ -262,7 +332,14 @@ static void EngineEnvironObjects(){
 
 static void Shell(Local<Context> SContext, Platform* SPlatform){
     ClearConsole();
-    cout << "ZendaJS<Beta> [" << ZendaVersion << "] - By " << ZendaCreator << "." << endl << "Happy hacking!" << endl << endl;
+    cout << R"""( * ZendaJS - Interactive Javascript Shell
+
+ > Warning: This is a beta version, not stable.
+   - )""" <<  "[" << ZendaVersion << "] - By " << ZendaCreator << "." R"""(
+   - contact@codewithrodi.com 
+   - https://codewithrodi.com/
+   - https://github.com/rodiihernandezz/ZendaJS/
+ )""" << endl;
     static const int kBufferSize = 256;
     Context::Scope context_scope(SContext);
     Local<String> name(
@@ -270,7 +347,7 @@ static void Shell(Local<Context> SContext, Platform* SPlatform){
     );
     while(true){
         char Buffer[kBufferSize];
-        fprintf(stderr, "Console -> ");
+        fprintf(stderr, " Console -> ");
         char* Code = fgets(Buffer, kBufferSize, stdin);
         if(Code == NULL) break;
         HandleScope handle_scope(SContext->GetIsolate());
