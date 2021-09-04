@@ -79,7 +79,7 @@ Zenda run-examples # For run all Zenda samples files.
 Using example file from source code directory
 ```bash
 Zenda run Examples/Computer.js
-OR
+# OR
 Zenda run your_javascript_file_location.js
 ```
 
