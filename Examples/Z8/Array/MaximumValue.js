@@ -13,4 +13,4 @@
 // Allows you to get the maximum value of array
 const Numbers = [66, 102, 34, 12, 45, 6, 1, 46, 102, 16];
 
-Console.Log('Minimum value =>', Numbers.MaximumValue());
+Console.Log('Maximum value =>', Numbers.MaximumValue());
