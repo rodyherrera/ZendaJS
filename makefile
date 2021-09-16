@@ -19,4 +19,4 @@ INCLUDES_LIBS = -L Libraries/V8/lib
 FLAGS = -lv8_monolith -lpython3.8
 
 build:
-	$(CXX) $(INCLUDES) $(INPUT) $(INCLUDES_LIBS) $(FLAGS) -lstdc++fs -std=c++2a -pthread -o $(OUTPUT) $(INCLUDES) $(FLAGS) -DV8_COMPRESS_POINTERS
+	$(CXX) $(INCLUDES) $(INPUT) $(INCLUDES_LIBS) $(FLAGS) -lstdc++fs -std=c++17 -pthread -o $(OUTPUT) $(INCLUDES) $(FLAGS) -DV8_COMPRESS_POINTERS
