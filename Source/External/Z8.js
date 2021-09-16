@@ -351,8 +351,8 @@ class Stack{
 
 class Queue{
     #Items = [];
-    EnQueque = (Item) => this.#Items.push(Item);
-    DeQueque = () => this.#Items.shift();
+    EnQueue = (Item) => this.#Items.push(Item);
+    DeQueue = () => this.#Items.shift();
     Peek = () => this.#Items[0];
     IsEmpty = () => this.#Items.length === 0;
     Clear = () => this.#Items.length = 0;
