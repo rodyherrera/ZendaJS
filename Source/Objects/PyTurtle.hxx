@@ -586,7 +586,7 @@ namespace Zenda::JavaScript::Objects::PyTurtle{
         print('\n')
         exit()
     except ModuleNotFoundError:
-        print('Please run "Zenda install-it"')
+        print('Please run "python3 Helper.py --runtime.dependencies" in the source code directory')
         exit()
     except Exception as Error:
         print('Error <>.')
