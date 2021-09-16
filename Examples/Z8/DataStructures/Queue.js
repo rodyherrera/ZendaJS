@@ -12,15 +12,15 @@
 
 const Countries = new Queue();
 
-Countries.EnQueque('Chile');
-Countries.EnQueque('Russia');
-Countries.EnQueque('Poland');
+Countries.EnQueue('Chile');
+Countries.EnQueue('Russia');
+Countries.EnQueue('Poland');
 
 // Since 3 values ​​have been added to the queue, their length should be 3
 Console.Log('Length of queue =>', Countries.Length);
 
 // We remove the last element of the cake, its length should now be 2.
-Countries.DeQueque();
+Countries.DeQueue();
 
 Console.Log('Length of queue =>', Countries.Length);
 
