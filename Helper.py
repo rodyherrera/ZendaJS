@@ -57,7 +57,7 @@ def ClearScreen() -> None:
         system('clear')
 
 def ContinueOrExit() -> None:
-    ContinueOrExit = input('\n * Do you want continue[y/N] > ')
+    ContinueOrExit = input('\n * Do you want continue[Y/n] > ')
 
     if ContinueOrExit.lower() != 'y':
         FinishScript()
