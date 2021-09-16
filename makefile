@@ -13,7 +13,6 @@
 CXX = g++
 OUTPUT = Zenda
 INPUT = Zenda.cxx
-V8 = Libraries/V8
 INCLUDES = -I Libraries/V8/include -I Libraries/Python3.8
 INCLUDES_LIBS = -L Libraries/V8/lib
 FLAGS = -lv8_monolith -lpython3.8
