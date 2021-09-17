@@ -23,6 +23,7 @@ export PATH=$PATH:`pwd` # It will allow you to run Zenda from anywhere in your f
 source ~/.bashrc # For save changes in PATH
 python3 Helper.py --build.dependencies # To install necessary packages for build
 python3 Helper.py --runtime.dependencies # For install runtime dependencies
+make # For build Zenda and make executable
 ```
 After executing these series of commands, you just have to type "Zenda" in your terminal to see that the software has already been installed!
 
