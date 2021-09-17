@@ -34,13 +34,13 @@ namespace Zenda::JavaScript::Objects::System{
 
     static void CommandOutput(const v8::FunctionCallbackInfo<v8::Value>& Arguments){
         v8::HandleScope Scope(Arguments.GetIsolate());
-        if(!Arguments[0]->IsUndefined())
+        if(Arguments[0]->IsUndefined())
             Zenda::Shortcuts::V8String(Arguments.GetIsolate(), "You need enter a command for get their output.");
         else{
             v8::String::Utf8Value Command(Arguments.GetIsolate(), Arguments[0]);
             Arguments.GetReturnValue().Set(
                 Zenda::Shortcuts::V8String(Arguments.GetIsolate(), Zenda::Algorithms::GetOutputOfCommand(
-                    std::string(std::string(*(Command))))));
+                    std::string(*Command))));
         }
     }
 
