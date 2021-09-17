@@ -28,7 +28,7 @@ make # For build Zenda and make executable
 After executing these series of commands, you just have to type "Zenda" in your terminal to see that the software has already been installed!
 
 ## Problems with the executable
-If you suffer problems when opening the executable it is perhaps necessary that you have to compile the code again, if you followed all the installation steps, do not open any type of problem, you just have to write the command "make" in your terminal, and you can use the executable.
+If you followed all the steps and the executable gives you problems or you suffer problems when compiling, it is likely that you are testing on Windows or MacOS, Zenda has only been tested on Linux distributions.
 
 ## Compatibility
 Zenda has only been tested on Linux Mint and Linux Ubuntu
