@@ -45,21 +45,6 @@ namespace Zenda::Shortcuts{
                 return *this;
             }
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-            ObjectCreator SetPropertyMethod(const std::string PropertyMethod, v8::Local<v8::Value> Value){
-                this->ObjectInstance->Set(
-                    v8::String::NewFromUtf8(this->Isolate, PropertyMethod.c_str(), v8::NewStringType::kNormal).ToLocalChecked(), Value);
-                return *this;
-            }
-
->>>>>>> New methods for the console and system.
->>>>>>> New methods for the console and system.
->>>>>>> New method in console object and new integrations to the system object.
             void Register(){
                 v8::Local<v8::Object> Instance = this->ObjectInstance->NewInstance(
                     this->Isolate->GetCurrentContext()
