@@ -24,22 +24,6 @@ namespace Zenda::JavaScript::Objects::Console{
     static inline void GetColor(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
     static inline void Clear(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
     static void Input(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> New methods for the console and system.
->>>>>>> New method in console object and new integrations to the system object.
-
-    static void Log(const v8::FunctionCallbackInfo<v8::Value>& Arguments){
-        for(unsigned short int Iterator = 0; Iterator < Arguments.Length(); Iterator++){
-            v8::HandleScope Scope(Arguments.GetIsolate());
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-=======
     static void Password(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
 
     static void Password(const v8::FunctionCallbackInfo<v8::Value>& Arguments){
@@ -51,9 +35,6 @@ namespace Zenda::JavaScript::Objects::Console{
     static void Log(const v8::FunctionCallbackInfo<v8::Value>& Arguments){
         v8::HandleScope Scope(Arguments.GetIsolate());
         for(unsigned short int Iterator = 0; Iterator < Arguments.Length(); Iterator++){
->>>>>>> New methods for the console and system.
->>>>>>> New methods for the console and system.
->>>>>>> New method in console object and new integrations to the system object.
             if(Iterator > 0) std::cout << " ";
             v8::String::Utf8Value Text(Arguments.GetIsolate(), Arguments[Iterator]);
             std::cout << std::string(*Text);
