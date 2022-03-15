@@ -204,16 +204,7 @@ static void EngineEnvironObjects(){
     .Register();
 
     Zenda::Shortcuts::CreateObject("Console")
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
         .SetPropertyMethod("Password", Zenda::JavaScript::Objects::Console::Password)
->>>>>>> New methods for the console and system.
->>>>>>> New methods for the console and system.
->>>>>>> New method in console object and new integrations to the system object.
         .SetPropertyMethod("Log",Zenda::JavaScript::Objects::Console::Log)
         .SetPropertyMethod("Error", Zenda::JavaScript::Objects::Console::Error)
         .SetPropertyMethod("Warning", Zenda::JavaScript::Objects::Console::Warning)
@@ -230,19 +221,10 @@ static void EngineEnvironObjects(){
     .Register();
 
     Zenda::Shortcuts::CreateObject("System")
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
         .SetPropertyMethod("KillProcess", Zenda::JavaScript::Objects::System::KillProcess)
         .SetPropertyMethod("SetUID", Zenda::JavaScript::Objects::System::SetUID)
         .SetPropertyMethod("GetUID", Zenda::JavaScript::Objects::System::GetUID)
         .SetPropertyMethod("GetV8Version", Zenda::JavaScript::Objects::System::GetV8Version)
->>>>>>> New methods for the console and system.
->>>>>>> New methods for the console and system.
->>>>>>> New method in console object and new integrations to the system object.
         .SetPropertyMethod("ChangeWorkingDirectory", Zenda::JavaScript::Objects::System::ChangeWorkingDirectory)
         .SetPropertyMethod("SetEnvironmentVariable", Zenda::JavaScript::Objects::System::SetEnvironmentVariable)
         .SetPropertyMethod("UnsetEnvironmentVariable", Zenda::JavaScript::Objects::System::UnsetEnvironmentVariable)
