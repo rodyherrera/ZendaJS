@@ -114,20 +114,9 @@ Console.Log('Your name is ' + answer);
 Console.Success('Success');
 Console.Information('Information');
 Console.Error('Error');
-<<<<<<< HEAD
-Console.Warning('Warning');
-=======
-<<<<<<< HEAD
-Console.Warning('Warning');
-=======
-<<<<<<< HEAD
-Console.Warning('Warning');
-=======
 Console.Warning('Warning');
 
 // Password
 const UserPassword = Console.Password('Enter your password: ');
 Console.Log('Your password is:', UserPassword);
->>>>>>> New methods for the console and system.
->>>>>>> New methods for the console and system.
->>>>>>> New method in console object and new integrations to the system object.
+
