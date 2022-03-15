@@ -24,12 +24,6 @@ namespace Zenda::JavaScript::Objects::System{
     static inline void ChangeWorkingDirectory(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
     static inline void SetEnvironmentVariable(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
     static inline void UnsetEnvironmentVariable(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
     static inline void GetV8Version(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
     static inline void KillProcess(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
     static inline void SetUID(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
@@ -64,9 +58,6 @@ namespace Zenda::JavaScript::Objects::System{
         Arguments.GetReturnValue().Set(Zenda::Shortcuts::V8String(
                 Arguments.GetIsolate(), std::string(v8::V8::GetVersion())));
     }
->>>>>>> New methods for the console and system.
->>>>>>> New methods for the console and system.
->>>>>>> New method in console object and new integrations to the system object.
 
     static inline void UnsetEnvironmentVariable(const v8::FunctionCallbackInfo<v8::Value>& Arguments){
         v8::HandleScope Scope(Arguments.GetIsolate());
