@@ -14,8 +14,8 @@ CXX = g++
 OUTPUT = Zenda
 INPUT = Zenda.cxx
 INCLUDES = -I Libraries/V8/include -I Libraries/Python3.8 -I Libraries/Misc
-INCLUDES_LIBS = -L Libraries/V8/lib
-FLAGS = -lv8_monolith -lpython3.8
+INCLUDES_LIBS = -L Libraries/V8/lib -L Libraries/Misc/infoware
+FLAGS = -lv8_monolith -lpython3.8 -linfoware
 
 ifeq '$(findstring ;,$(PATH))' ';'
     OperatingSystem := Windows

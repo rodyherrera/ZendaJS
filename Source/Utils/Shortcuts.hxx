@@ -63,8 +63,16 @@ namespace Zenda::Shortcuts{
             Zenda::Shortcuts::V8FunctionTemplate(Zenda::Definitions::Isolate, Callback));
     }
 
-    static inline void Set(v8::Local<v8::Object> Object, v8::Isolate* Isolate, std::string Key, size_t Value){
-        v8::Maybe<bool> IntValue = Object->Set(Isolate->GetCurrentContext(), V8String(Isolate, Key), V8Number(Isolate, Value));
+    static inline void Set(v8::Local<v8::Object> Object, std::string Key, size_t Value){
+        v8::Maybe<bool> IntValue = Object->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), V8String(v8::Isolate::GetCurrent(), Key), V8Number(v8::Isolate::GetCurrent(), Value));
+    }
+
+    static inline void Set(v8::Local<v8::Object> Object, std::string Key, std::string Value){
+        v8::Maybe<bool> StrValue = Object->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), V8String(v8::Isolate::GetCurrent(), Key), V8String(v8::Isolate::GetCurrent(), Value));
+    }
+
+    static inline void Set(v8::Local<v8::Object> Object, std::string Key, v8::Local<v8::Object> Value){
+        v8::Maybe<bool> ObjValue = Object->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), V8String(v8::Isolate::GetCurrent(), Key), Value);
     }
 
     static inline ObjectCreator CreateObject(const std::string ObjectName){

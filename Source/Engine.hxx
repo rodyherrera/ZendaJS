@@ -221,6 +221,9 @@ static void EngineEnvironObjects(){
     .Register();
 
     Zenda::Shortcuts::CreateObject("System")
+        .SetPropertyMethod("GetKernel", Zenda::JavaScript::Objects::System::GetKernel)
+        .SetPropertyMethod("GetDistribution", Zenda::JavaScript::Objects::System::GetDistribution)
+        .SetPropertyMethod("GetCPU", Zenda::JavaScript::Objects::System::GetCPU)
         .SetPropertyMethod("KillProcess", Zenda::JavaScript::Objects::System::KillProcess)
         .SetPropertyMethod("SetUID", Zenda::JavaScript::Objects::System::SetUID)
         .SetPropertyMethod("GetUID", Zenda::JavaScript::Objects::System::GetUID)

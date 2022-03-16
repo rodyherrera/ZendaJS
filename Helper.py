@@ -27,7 +27,7 @@ kRequiredPackages = {
             'sudo apt-get install g++',
             'sudo apt-get install python3'
             'sudo apt-get install gtk+-3.0',
-            'sudo apt-get install webkit2gtk-4.0',
+            'sudo apt-get install webkit2gtk-4.0'
         ],
         
         'Darwin': [

@@ -62,6 +62,65 @@ Object.defineProperties(Math.__proto__, {
             return Integer >= 2;
         },
         writable: false
+    },
+
+    'IsPowerOfTwo': {
+        value: function(Number){
+            return (Number & (Number - 1)) === 0;
+        },
+        writable: false
+    },
+
+    'DivideByTwo': {
+        value: function(Number){
+            return Number >> 1;
+        },
+        writable: false
+    },
+
+    'MultiplyByTwo': {
+        value: function(Number){
+            return Number << 1;
+        },
+        writable: false
+    },
+
+    'IsEven': {
+        value: function(Number){
+            return (Number & 1) === 0;
+        },
+        writable: false
+    },
+
+    'IsPositive': {
+        value: function(Number){
+            // Zero is neither a positive nor a negative number
+            if(Number === 0)
+                return false;
+            // The most significant 32nd bit can be used to determine wether
+            // the number is positive
+            return ((Number >> 31) & 1) == 0;
+        },
+        writable: false
+    },
+
+    'GetReadableUnitSize': {
+        value: function(Bytes, UseUnitSI = false, DecimalPlaces = 1){
+            const Thresh = UseUnitSI ? 1000 : 1024;
+            if(Math.abs(Bytes) < Thresh)
+                return Bytes + ' B';
+            const Units = UseUnitSI
+                ? ['KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+                : ['KiB', 'MiB', 'GiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+            let Unit = -1;
+            const R = 10 ** DecimalPlaces;
+            do{
+                Bytes /= Thresh;
+                ++Unit;
+            }while(Math.round(Math.abs(Bytes) * R) / R >= Thresh && Unit < Units.length - 1);
+            return Bytes.toFixed(DecimalPlaces) + ' ' + Units[Unit];
+        },
+        writable: false
     }
 });
 
