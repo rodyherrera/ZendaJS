@@ -52,6 +52,7 @@ kRequiredPackages = {
 
 def FinishScript() -> None:
     print('\n\n * Remember drink water <3\n\n')
+    sys.exit()
 
 def ClearScreen() -> None:
     if kOperativeSystem == 'Windows':
@@ -61,7 +62,7 @@ def ClearScreen() -> None:
 
 def ContinueOrExit() -> None:
     ContinueOrExit = input('\n * Do you want continue[Y/n] > ')
-
+    
     if ContinueOrExit.lower() != 'y':
         FinishScript()
 
