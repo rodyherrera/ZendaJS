@@ -11,7 +11,7 @@
  ****/
 
 #define ZENDA_CREATOR "Rodolfo Herrera Hernandez"
-#define ZENDA_VERSION "1.0.8"
+#define ZENDA_VERSION "1.0.9"
 
 namespace Zenda::Definitions{
     v8::Isolate* Isolate;
