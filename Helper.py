@@ -63,7 +63,7 @@ def ClearScreen() -> None:
 def ContinueOrExit() -> None:
     ContinueOrExit = input('\n * Do you want continue[Y/n] > ')
     
-    if ContinueOrExit.lower() != 'y':
+    if ContinueOrExit.lower() != 'y' and not len(ContinueOrExit) == 0:
         FinishScript()
 
 def InstallPackages(PackageList = 'Dependencies') -> None:
