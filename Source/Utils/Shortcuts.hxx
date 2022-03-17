@@ -93,6 +93,14 @@ namespace Zenda::Shortcuts{
         return std::atoi(GetKeyValue(Isolate, Object, Key, Default).c_str());
     }
 
+    v8::Local<v8::Value> Get(v8::Local<v8::Object> Object, std::string Key, std::string ThrowMessage){
+        v8::Local<v8::Value> Value = Object->Get(v8::Isolate::GetCurrent()->GetCurrentContext(),
+            Zenda::Shortcuts::V8String(v8::Isolate::GetCurrent(), Key)).ToLocalChecked().As<v8::Value>();
+        if(Value->IsUndefined())
+            V8Exception(v8::Isolate::GetCurrent(), ThrowMessage);
+        return Value;
+    }
+    
     v8::Local<v8::Value> V8String(v8::Isolate* Isolate, const std::string String){
         return v8::String::NewFromUtf8(
             Isolate, String.c_str(), v8::NewStringType::kNormal,

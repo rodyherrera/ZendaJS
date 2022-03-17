@@ -27,13 +27,17 @@ kRequiredPackages = {
             'sudo apt-get install g++',
             'sudo apt-get install python3'
             'sudo apt-get install gtk+-3.0',
-            'sudo apt-get install webkit2gtk-4.0'
+            'sudo apt-get install webkit2gtk-4.0',
+            'sudo apt-get install libpoco-dev'
         ],
         
         'Darwin': [
             'brew install make',
             'brew install gcc',
-            'brew install python'
+            'brew install python',
+            'brew install poco',
+            'brew install webkitgtk',
+            'brew install gtk+3'
         ]
     },
 

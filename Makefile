@@ -13,9 +13,9 @@
 CXX = g++
 OUTPUT = Zenda
 INPUT = Zenda.cxx
-INCLUDES = -I Libraries/V8/include -I Libraries/Python3.8 -I Libraries/Misc
-INCLUDES_LIBS = -L Libraries/V8/lib -L Libraries/Misc/infoware
-FLAGS = -lv8_monolith -lpython3.8 -linfoware
+INCLUDES = -I Libraries/V8/include -I Libraries/Python3.8 -I Libraries/Misc -I/usr/local/Poco/include 
+INCLUDES_LIBS = -L Libraries/V8/lib -L Libraries/Misc/infoware -L/usr/local/Poco/lib
+FLAGS = -lv8_monolith -lpython3.8 -linfoware -lPocoNet -lPocoFoundation -lPocoNetSSL
 
 ifeq '$(findstring ;,$(PATH))' ';'
     OperatingSystem := Windows

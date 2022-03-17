@@ -133,6 +133,7 @@ static void EngineEnvironObjects();
 #include "Objects/PyTurtle.hxx"
 
 static void EngineEnvironMethods(){
+    Zenda::Shortcuts::CreateMethod("SendMail", Zenda::JavaScript::Methods::Misc::SendMail);
     Zenda::Shortcuts::CreateMethod("UseWebView", Zenda::JavaScript::Methods::Misc::UseWebView);
     Zenda::Shortcuts::CreateMethod("ExecuteScript", Zenda::JavaScript::Methods::Misc::ExecuteScript);
     Zenda::Shortcuts::CreateMethod("Version", Zenda::JavaScript::Methods::Misc::Version);
