@@ -24,10 +24,10 @@
 const HasError = SendMail({
     // 'To' parameter specifies the email address 
     // where you want to send the mail.
-    To: 'rodolfitjows@gmail.com',
+    To: 'johndoe@example.com',
     // 'From' parameter must contain as value the email 
     // address from which the mail will be sent.
-    From: 'admin@codewithrodi.com',
+    From: 'myuser@example.com',
     // 'Subject' parameter will contain the Subject of the 
     // mail, where there are the most relevant words when reading it.
     Subject: 'Sending a email from ZendaJS',
@@ -44,17 +44,17 @@ const HasError = SendMail({
         // 'Hostname' must contain the server address, it can be an 
         // IP or directly the DNS, for example 
         // <smtp.mysmtpserver.com> or <11.22.33.44>
-        Hostname: 'codewithrodi.com',
+        Hostname: 'smtp.example.com',
         // 'Port' must contain an integer value that will be the server port.
         Port: 465,
         // 'Username' must contain the email address or username 
         // that will serve to authenticate the SMTP server and allow 
         // sending, for example <noreply@mydomain.com>
-        Username: 'admin@codewithrodi.com',
+        Username: 'emailmaster@example.com',
         // 'Password' must contain the password that will serve 
         // to authenticate the user that was previously indicated 
         // in the previous parameter.
-        Password: 'rodolfoxd665'
+        Password: 'mysecurepassword123'
     }
 });
 
