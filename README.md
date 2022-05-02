@@ -28,6 +28,8 @@ cd ZendaJS
 export PATH=$PATH:`pwd` 
 # For save changes in PATH
 source ~/.bashrc 
+# Update packages
+sudo apt update
 # To install necessary packages for build
 python3 Helper.py --BuildDependencies 
  # For install runtime dependencies
