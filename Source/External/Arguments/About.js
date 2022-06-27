@@ -16,10 +16,8 @@ const Callbacks = {
     Success: ({ JsonContent }) => {
         const Project = JsonContent.Project;
         const Author = JsonContent.Author;
-        const Commands = JsonContent.Commands;
 
         Console.Clear();
-
         Console.Log(`
  * Project
           

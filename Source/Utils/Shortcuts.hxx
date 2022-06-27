@@ -71,6 +71,18 @@ namespace Zenda::Shortcuts{
         v8::Maybe<bool> StrValue = Object->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), V8String(v8::Isolate::GetCurrent(), Key), V8String(v8::Isolate::GetCurrent(), Value));
     }
 
+    std::string JSONString(v8::Isolate* Isolate, v8::Local<v8::Value> Value){
+        if(Value.IsEmpty())
+            return std::string("{ }");
+        v8::Local<v8::Object> JSON = Isolate->GetCurrentContext()->Global()->Get(Isolate->GetCurrentContext(), V8String(Isolate, "JSON")).ToLocalChecked().As<v8::Object>();
+        v8::Local<v8::Function> Stringify = JSON->Get(Isolate->GetCurrentContext(), V8String(Isolate, "stringify")).ToLocalChecked().As<v8::Function>();
+        v8::Local<v8::Value> Null = v8::Null(Isolate).As<v8::Value>();
+        v8::Local<v8::Value> Argv[] = { Value, Null, V8Integer(Isolate, 4) };
+        v8::Local<v8::Value> Result = Stringify->Call(Isolate->GetCurrentContext(), V8Boolean(Isolate, true), 3, Argv).ToLocalChecked();
+        v8::String::Utf8Value Utf8Result(Isolate, Result);
+        return std::string(*Utf8Result);
+    }
+
     static inline void Set(v8::Local<v8::Object> Object, std::string Key, v8::Local<v8::Object> Value){
         v8::Maybe<bool> ObjValue = Object->Set(v8::Isolate::GetCurrent()->GetCurrentContext(), V8String(v8::Isolate::GetCurrent(), Key), Value);
     }
@@ -98,6 +110,12 @@ namespace Zenda::Shortcuts{
             Zenda::Shortcuts::V8String(v8::Isolate::GetCurrent(), Key)).ToLocalChecked().As<v8::Value>();
         if(Value->IsUndefined())
             V8Exception(v8::Isolate::GetCurrent(), ThrowMessage);
+        return Value;
+    }
+
+    v8::Local<v8::Value> Get(v8::Local<v8::Object> Object, std::string Key){
+        v8::Local<v8::Value> Value = Object->Get(v8::Isolate::GetCurrent()->GetCurrentContext(),
+            Zenda::Shortcuts::V8String(v8::Isolate::GetCurrent(), Key)).ToLocalChecked().As<v8::Value>();
         return Value;
     }
     

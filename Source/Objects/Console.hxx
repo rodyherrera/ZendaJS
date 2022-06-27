@@ -32,12 +32,18 @@ namespace Zenda::JavaScript::Objects::Console{
         Arguments.GetReturnValue().Set(Zenda::Shortcuts::V8String(Arguments.GetIsolate(), std::string(getpass(*Prompt))));
     }
 
+
     static void Log(const v8::FunctionCallbackInfo<v8::Value>& Arguments){
         v8::HandleScope Scope(Arguments.GetIsolate());
         for(unsigned short int Iterator = 0; Iterator < Arguments.Length(); Iterator++){
             if(Iterator > 0) std::cout << " ";
-            v8::String::Utf8Value Text(Arguments.GetIsolate(), Arguments[Iterator]);
-            std::cout << std::string(*Text);
+            v8::Local<v8::Value> Value = Arguments[Iterator];
+            if(Value->IsObject()){
+                std::cout << Zenda::Shortcuts::JSONString(Arguments.GetIsolate(), Value);
+            }else{
+                v8::String::Utf8Value Text(Arguments.GetIsolate(), Value);
+                std::cout << std::string(*Text);
+            }
         }
         std::cout << std::endl;
     }

@@ -20,17 +20,157 @@
 #include <Poco/Net/SSLManager.h>
 #include <Poco/Net/SecureStreamSocket.h>
 #include <Poco/Net/MailRecipient.h>
+#include "restclient-cpp/connection.h"
+#include "restclient-cpp/restclient.h"
 
 #define WEBVIEW_IMPLEMENTATION
 #include "WebView.hxx"
 
 namespace Zenda::JavaScript::Methods::Misc{
+    static void Fetch(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
     static inline void Version(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
     static inline void Creator(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
     static void ExecuteScript(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
     static inline void Sleep(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
     static inline void UseWebView(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
     static void SendMail(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
+
+    static void Fetch(const v8::FunctionCallbackInfo<v8::Value>& Arguments){
+        v8::HandleScope Scope(Arguments.GetIsolate());
+        v8::Local<v8::Promise::Resolver> Resolver = 
+            v8::Promise::Resolver::New(Arguments.GetIsolate()->GetCurrentContext()).ToLocalChecked();
+        v8::MaybeLocal<v8::Promise> Promise(Resolver->GetPromise());
+        v8::String::Utf8Value Server(Arguments.GetIsolate(), Arguments[0]);
+        v8::Local<v8::Object> Options = Arguments[1].As<v8::Object>();
+        std::string Method = "GET";
+        std::string Body = "";
+        std::string UserAgent = "ZendaJS/Fetch";
+        std::string BSAUsername = "";
+        std::string BSAPassword = "";
+        std::string CertPath = "";
+        std::string CertType = "";
+        std::string KeyPath = "";
+        std::string KeyPassword = "";
+        std::string Proxy = "";
+        unsigned short int Timeout = 5;
+        RestClient::HeaderFields RequestHeaders;
+        if(!Options->IsUndefined()){
+            v8::String::Utf8Value CustomMethod(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "Method"));
+            v8::String::Utf8Value CustomBody(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "Body"));
+            v8::String::Utf8Value CustomUserAgent(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "UserAgent"));
+            v8::String::Utf8Value CustomCaFilePath(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "CaFilePath"));
+            v8::Local<v8::Object> BasicAuth = Zenda::Shortcuts::Get(Options, "BasicAuth").As<v8::Object>();
+            v8::String::Utf8Value CustomBSAUsername(Arguments.GetIsolate(), Zenda::Shortcuts::Get(BasicAuth, "Username"));
+            v8::String::Utf8Value CustomBSAPassword(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "Password"));
+            v8::String::Utf8Value CustomCertPath(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "CertPath"));
+            v8::String::Utf8Value CustomCertType(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "CertType"));
+            v8::String::Utf8Value CustomKeyPath(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "KeyPath"));
+            v8::String::Utf8Value CustomKeyPassword(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "KeyPassword"));
+            v8::String::Utf8Value CustomProxy(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "Proxy"));
+            v8::Local<v8::Value> CustomTimeout = Zenda::Shortcuts::Get(Options, "Timeout");
+            v8::Local<v8::Object> CustomHeaders = Zenda::Shortcuts::Get(Options, "Headers").As<v8::Object>();
+            if(!CustomHeaders->IsUndefined()){
+                v8::Local<v8::Array> PropertyNames = CustomHeaders->GetPropertyNames(Arguments.GetIsolate()->GetCurrentContext()).ToLocalChecked().As<v8::Array>();
+                for(unsigned short int PropertyNameIterator = 0; PropertyNameIterator < PropertyNames->Length(); PropertyNameIterator++){
+                    v8::String::Utf8Value HeaderName(Arguments.GetIsolate(), 
+                        PropertyNames->Get(Arguments.GetIsolate()->GetCurrentContext(), PropertyNameIterator).ToLocalChecked());
+                    v8::String::Utf8Value HeaderValue(Arguments.GetIsolate(), Zenda::Shortcuts::Get(CustomHeaders, std::string(*HeaderName)));
+                    RequestHeaders[*HeaderName] = *HeaderValue;
+                }
+            }
+            if(!CustomTimeout->IsUndefined())
+                Timeout = CustomTimeout->NumberValue(Arguments.GetIsolate()->GetCurrentContext()).FromJust();
+            if(*CustomProxy)
+                Proxy = std::string(*CustomProxy);
+            if(*CustomKeyPassword)
+                KeyPassword = std::string(*CustomKeyPassword);
+            if(*CustomKeyPath)
+                KeyPath = std::string(*CustomKeyPath);
+            if(*CustomCertType)
+                CertType = std::string(*CustomCertType);
+            if(*CustomCertPath)
+                CertPath = std::string(*CustomCertPath);
+            if(*CustomBSAUsername)
+                BSAUsername = std::string(*CustomBSAUsername);
+            if(*CustomBSAPassword)
+                BSAPassword = std::string(*CustomBSAPassword);
+            if(*CustomUserAgent)
+                UserAgent = std::string(*CustomUserAgent);
+            if(*CustomMethod)
+                Method = std::string(*CustomMethod);
+            if(*CustomBody)
+                Body = std::string(*CustomBody);
+        }
+        RestClient::init();
+        RestClient::Connection* Connection = new RestClient::Connection(*Server);
+        Connection->SetHeaders(RequestHeaders);
+        if(CertPath.length())
+            Connection->SetCertPath(CertPath);
+        if(CertType.length())
+            Connection->SetCertType(CertType);
+        if(KeyPath.length())
+            Connection->SetKeyPath(KeyPath);
+        if(KeyPassword.length())
+            Connection->SetKeyPassword(KeyPassword);
+        if(Proxy.length())
+            Connection->SetProxy(Proxy);
+        if(BSAUsername.length() && BSAPassword.length())
+            Connection->SetBasicAuth(BSAUsername, BSAPassword);
+        Connection->SetUserAgent(UserAgent);
+        Connection->SetTimeout(Timeout);
+        RestClient::Response Response = Connection->get("");
+        if(Method == "POST")
+            Response = Connection->post("", Body);
+        else if(Method == "PATCH")
+            Response = Connection->patch("", Body);
+        else if(Method == "HEAD")
+            Response = Connection->head("");
+        else if(Method == "DELETE")
+            Response = Connection->del("");
+        else if(Method == "OPTIONS")
+            Response = Connection->options("");
+        else if(Method == "PUT")
+            Response = Connection->put("", Body);
+        v8::Local<v8::Object> ReturnValue = v8::Object::New(Arguments.GetIsolate());
+        v8::Local<v8::Object> Headers = v8::Object::New(Arguments.GetIsolate());
+        v8::Local<v8::Object> LastRequest = v8::Object::New(Arguments.GetIsolate());
+        v8::Local<v8::Object> BasicAuth = v8::Object::New(Arguments.GetIsolate());
+        RestClient::Connection::Info ConnectionInfo = Connection->GetInfo();
+        RestClient::Connection::RequestInfo LastRequestInfo = ConnectionInfo.lastRequest;
+        std::map<std::string, std::string>::iterator HttpHeadersIterator;
+        for(HttpHeadersIterator = Response.headers.begin(); HttpHeadersIterator != Response.headers.end(); HttpHeadersIterator++)
+            Zenda::Shortcuts::Set(Headers, HttpHeadersIterator->first, HttpHeadersIterator->second);
+        Zenda::Shortcuts::Set(BasicAuth, "Username", ConnectionInfo.basicAuth.username);
+        Zenda::Shortcuts::Set(BasicAuth, "Password", ConnectionInfo.basicAuth.password);
+        Zenda::Shortcuts::Set(LastRequest, "TotalTime", LastRequestInfo.totalTime);
+        Zenda::Shortcuts::Set(LastRequest, "Code", LastRequestInfo.curlCode);
+        Zenda::Shortcuts::Set(LastRequest, "Error", LastRequestInfo.curlError);
+        Zenda::Shortcuts::Set(LastRequest, "NameLookupTime", LastRequestInfo.nameLookupTime);
+        Zenda::Shortcuts::Set(LastRequest, "ConnectTime", LastRequestInfo.connectTime);
+        Zenda::Shortcuts::Set(LastRequest, "AppConnectTime", LastRequestInfo.appConnectTime);
+        Zenda::Shortcuts::Set(LastRequest, "PreTransferTime", LastRequestInfo.preTransferTime);
+        Zenda::Shortcuts::Set(LastRequest, "StartTransferTime", LastRequestInfo.startTransferTime);
+        Zenda::Shortcuts::Set(LastRequest, "RedirectTime", LastRequestInfo.redirectTime);
+        Zenda::Shortcuts::Set(LastRequest, "RedirectCount", LastRequestInfo.redirectCount);
+        Zenda::Shortcuts::Set(ReturnValue, "LastRequest", LastRequest);
+        Zenda::Shortcuts::Set(ReturnValue, "StatusCode", Response.code);
+        Zenda::Shortcuts::Set(ReturnValue, "Headers", Headers);
+        Zenda::Shortcuts::Set(ReturnValue, "Body", Response.body);
+        Zenda::Shortcuts::Set(ReturnValue, "BaseURL", ConnectionInfo.baseUrl);
+        Zenda::Shortcuts::Set(ReturnValue, "CertPath", ConnectionInfo.certPath);
+        Zenda::Shortcuts::Set(ReturnValue, "CertType", ConnectionInfo.certType);
+        Zenda::Shortcuts::Set(ReturnValue, "UserAgent", ConnectionInfo.customUserAgent);
+        Zenda::Shortcuts::Set(ReturnValue, "FollowRedirects", ConnectionInfo.followRedirects);
+        Zenda::Shortcuts::Set(ReturnValue, "KeyPassword", ConnectionInfo.keyPassword);
+        Zenda::Shortcuts::Set(ReturnValue, "KeyPath", ConnectionInfo.keyPath);
+        Zenda::Shortcuts::Set(ReturnValue, "MaxRedirects", ConnectionInfo.maxRedirects);
+        Zenda::Shortcuts::Set(ReturnValue, "NoSignal", ConnectionInfo.noSignal);
+        Zenda::Shortcuts::Set(ReturnValue, "Timeout", ConnectionInfo.timeout);
+        Zenda::Shortcuts::Set(ReturnValue, "UriProxy", ConnectionInfo.uriProxy);
+        RestClient::disable();
+        v8::Maybe<bool> PromiseResolve = Resolver->Resolve(Arguments.GetIsolate()->GetCurrentContext(), ReturnValue);
+        Arguments.GetReturnValue().Set(Promise.ToLocalChecked());
+    }
 
     static void SendMail(const v8::FunctionCallbackInfo<v8::Value>& Arguments){
         //TODO: Initial version of the method, it is necessary to apply 

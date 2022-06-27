@@ -1,14 +1,11 @@
 # ZendaJS
 ##### Lightweight and fast Javascript environment on the server side.
-##### Just tested in Linux
-ZendaJS is a javascript environment that allows you to execute the language on the server side and not on the client side, this technology works using Google's V8 engine in C++, in some processes Zenda can achieve a higher performance compared to other environments on the side. from the server like NodeJS or Deno.
+ZendaJS is a fast execution environment for the JavScript language, based on Google's amazing v8 engine, it's where this environment runs under the C/C++ language, isn't it great to have access to JavaScript on the server side? try Zenda, learn and create better things!
 
-As this technology is not 100% developed and is only in beta versions, you have the possibility to interact with the Python programming language from your JavaScript files, that's great, you can see each of the functionalities of this technology in the folder From examples, when interacting with Python you can do everything, Python is a language with which you can achieve anything.
-
-Z8, Zenda integrates extra functionalities to already predefined JavaScript objects, such as Arrays, Strings etc ..., What the Z8 does is integrate new methods to these objects, also data structures and even algorithms for cryptography, you just have to check the folder examples and head to Z8!
+This environment integrates Zenda Z8, which we can see as a library that will be executed in the core of this technology every time you run a script or use the console, allowing you to access various useful features so that you do not have to use external libraries or write them yourself, we are talking about data structures, implementations to native classes along with data types. Within the anatomy of the source code of this software, you will find a folder called 'Examples', which contains examples of each of the functionality that this fantastic environment offers you, where you can find the different new implementations that Z8 does in JavaScript!
 
 ## Requirements
-You only need to have Python3 installed, this to make possible the installation of the necessary packages both to compile and to run Zenda, from the Helper.py file located in the source code all the magic happens so that you do not have to install each package yourself.
+The simple and the minimalistic is the best, why have to install a lot of dependencies by yourself? You only have to have the python3 interpreter installed on your machine, so that it is possible to execute a script that does the entire installation process. by you!
 
 ```bash
 # For MacOS <Not tested>
@@ -18,7 +15,7 @@ sudo apt-get install python3
 ```
 
 ## Installation
-
+Next, the series of commands that you must execute on your machine for the installation of this JavaScript environment will be shown, make sure you do not leave any out, it is likely that this will take time, since dependencies will be installed.
 ```bash
 # Clone Zenda repo
 git clone https://github.com/codewithrodi/ZendaJS.git
@@ -32,14 +29,16 @@ source ~/.bashrc
 sudo apt update
 # To install necessary packages for build
 python3 Helper.py --BuildDependencies 
- # For install runtime dependencies
+# For install runtime dependencies
 python3 Helper.py --RuntimeDependencies
-make # For build Zenda and make executable
+# For build Zenda and make executable (Optional)
+# make
 ```
-After executing these series of commands, you just have to type "Zenda" in your terminal to see that the software has already been installed!
+After executing these series of commands, you just have to type "Zenda" in your terminal to see that the software has already been installed, When executing "Zenda" in your terminal, a help will be displayed about the available commands that you can use!
 
 ## Getting started
 ZendaJS provides you with a large number of example files, you can use those files to learn how to use this technology, these files are commented, where the code you are seeing has an explanation, next we will make a quick example so that you have your first Hello World!
+
 ```bash
 # Creating a file where we will write the code.
 nano Script.js
@@ -49,11 +48,8 @@ Once the previous command is executed, a basic text editor will open in your ter
 // Showing a message in the terminal, using the Log method of the Console object, it receives the messages to be printed as parameters, for each parameter that is sent it will be a space.
 Console.Log('Hello world from ZendaJS');
 ```
-## Problems with the executable
-If you followed all the steps and the executable gives you problems or you suffer problems when compiling, it is likely that you are testing on Windows or MacOS, Zenda has only been tested on Linux distributions.
-
-## Compatibility
-Zenda has only been tested on Linux.
+## Problems with the executable and compatibility
+If you followed all the steps and the executable gives you problems or you suffer problems when compiling, it is likely that you are testing on Windows or MacOS, Zenda has only been tested on Linux distributions, the development of this JavaScript environment has been purely in Linux, it has never been tested in another operating system, so the correct operation in the different alternatives to Linux-based distributions is unknown, so, if you're on Windows or MacOS, you shouldn't get frustrated in case your console gets full of errors when trying to open the executable that already comes in the source code anatomy or when trying to compile the software.
 
 Executable commands
 ```bash
@@ -86,7 +82,7 @@ If you want to learn Zenda you can look at the "Examples" folder found in the so
 You are likely to encounter runtime errors, Zenda is not on a stable version.
 
 ## Contributing
-ZendaJS was created to test my knowledge when developing things from scratch, it is likely that over time it will improve as I read, understand and study the documentation of the Google V8 engine <3.
+This execution environment, Zenda, was created without any profit, just practice, you can learn or use the code of this software as you want, you can improve it or create your own environment from it, I leave you the invitation made to you can learn much more about this world, if you want advice, buy comfort because you will cry a lot solving bugs wuajaj:)
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

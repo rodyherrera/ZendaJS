@@ -28,7 +28,8 @@ kRequiredPackages = {
             'sudo apt-get install python3',
             'sudo apt-get install gtk+-3.0',
             'sudo apt-get install webkit2gtk-4.0',
-            'sudo apt-get install libpoco-dev'
+            'sudo apt-get install libpoco-dev',
+            'sudo apt-get install libcurl4-openssl-dev'
         ],
         
         'Darwin': [
