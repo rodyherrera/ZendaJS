@@ -21,16 +21,18 @@ Next, the series of commands that you must execute on your machine for the insta
 git clone https://github.com/codewithrodi/ZendaJS.git
 # Enter to Zenda source code
 cd ZendaJS 
+# Privileges to the executable
+chmod +x Zenda
 # It will allow you to run Zenda from anywhere in your file branch.
 export PATH=$PATH:`pwd` 
 # For save changes in PATH
 source ~/.bashrc 
-# Update packages
-sudo apt update
 # To install necessary packages for build
 python3 Helper.py --BuildDependencies 
 # For install runtime dependencies
 python3 Helper.py --RuntimeDependencies
+# Update packages
+sudo apt update
 # For build Zenda and make executable (Optional)
 # make
 ```
