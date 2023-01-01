@@ -274,6 +274,9 @@ static void EngineEnvironObjects(){
         .SetPropertyMethod("QuickRewriteFile", Zenda::JavaScript::Objects::FileSystem::QuickRewriteFile)
         .SetPropertyMethod("RewriteFile", Zenda::JavaScript::Objects::FileSystem::RewriteFile)
         .SetPropertyMethod("ListDirectory", Zenda::JavaScript::Objects::FileSystem::ListDirectory)
+        .SetPropertyMethod("GetFilenameFromPath", Zenda::JavaScript::Objects::FileSystem::GetFilenameFromPath)
+        .SetPropertyMethod("GetDirectoryNameFromPath", Zenda::JavaScript::Objects::FileSystem::GetDirectoryNameFromPath)
+        .SetPropertyMethod("IsAbsolutePath", Zenda::JavaScript::Objects::FileSystem::IsAbsolutePath)
     .Register();
 }
 

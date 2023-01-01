@@ -23,6 +23,42 @@ namespace Zenda::FileSystem{
     static inline const bool WriteFile(const std::string Filename, const std::string Content);
     static inline const bool RewriteFile(const std::string Filename, const std::string Content);
     static inline const int FileSize(const std::string Filename);
+    static inline const size_t GetLastSlashOfPath(const std::string FullPath);
+    static inline const std::string GetFilenameFromPath(std::string Path);
+    static inline const std::string GetDirectoryNameFromPath(std::string Path);
+    static inline const bool IsAbsolutePath(const std::string Path);
+
+    static inline const bool IsAbsolutePath(const std::string Path){
+        #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+            size_t Position = Path.find(':');
+            return (Position != std::string::npos);
+        #else
+            if(Path.length() == 0)
+                return false;
+            return (Path.at(0) == '/');
+        #endif
+    }
+
+    static inline const std::string GetDirectoryNameFromPath(std::string Path){
+        size_t Position = GetLastSlashOfPath(Path);
+        if(Position != std::string::npos)
+            Path.erase(Position, Path.length() - Position);
+        return Path;
+    }
+
+    static inline const std::string GetFilenameFromPath(std::string Path){
+        size_t Position = GetLastSlashOfPath(Path);
+        if(Position != std::string::npos)
+            Path.erase(0, Position + 1);
+        return Path;
+    }
+
+    static inline const size_t GetLastSlashOfPath(const std::string FullPath){
+        size_t Position = FullPath.find_last_of('/');
+        if(Position == std::string::npos)
+            Position = FullPath.find_last_of('\\');
+        return Position;
+    }
 
     static inline const std::vector<std::string> ListDirectory(const std::string Path){
         std::vector<std::string> Content;

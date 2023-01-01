@@ -39,7 +39,7 @@ namespace Zenda::JavaScript::Objects::System{
     static const char* ResolveEndiannessName(iware::cpu::endianness_t Endianness) noexcept;
     static const char* ResolveKernelVariantName(iware::system::kernel_t Variant) noexcept;
     static void GetDistribution(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
-
+    
     static void GetDistribution(const v8::FunctionCallbackInfo<v8::Value>& Arguments){
         v8::HandleScope Scope(Arguments.GetIsolate());
         const auto Information = iware::system::OS_info();

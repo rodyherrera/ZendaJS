@@ -39,6 +39,33 @@ namespace Zenda::JavaScript::Objects::FileSystem{
     static void WriteFile(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
     static inline void QuickRewriteFile(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
     static void RewriteFile(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
+    static inline void GetFilenameFromPath(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
+    static inline void GetDirectoryNameFromPath(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
+    static inline void IsAbsolutePath(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
+
+    static inline void IsAbsolutePath(const v8::FunctionCallbackInfo<v8::Value>& Arguments){
+        v8::HandleScope Scope(Arguments.GetIsolate());
+        v8::String::Utf8Value Path(Arguments.GetIsolate(), Arguments[0]);
+        Arguments.GetReturnValue().Set(
+            Zenda::Shortcuts::V8Boolean(Arguments.GetIsolate(),
+            Zenda::FileSystem::IsAbsolutePath(std::string(*Path))));
+    }
+
+    static inline void GetDirectoryNameFromPath(const v8::FunctionCallbackInfo<v8::Value>& Arguments){
+        v8::HandleScope Scope(Arguments.GetIsolate());
+        v8::String::Utf8Value Path(Arguments.GetIsolate(), Arguments[0]);
+        Arguments.GetReturnValue().Set(
+            Zenda::Shortcuts::V8String(Arguments.GetIsolate(),
+            Zenda::FileSystem::GetDirectoryNameFromPath(std::string(*Path))));
+    }
+
+    static inline void GetFilenameFromPath(const v8::FunctionCallbackInfo<v8::Value>& Arguments){
+        v8::HandleScope Scope(Arguments.GetIsolate());
+        v8::String::Utf8Value Path(Arguments.GetIsolate(), Arguments[0]);
+        Arguments.GetReturnValue().Set(
+            Zenda::Shortcuts::V8String(Arguments.GetIsolate(), 
+            Zenda::FileSystem::GetFilenameFromPath(std::string(*Path))));
+    }
 
     static inline void FileExists(const v8::FunctionCallbackInfo<v8::Value>& Arguments){
         v8::HandleScope Scope(Arguments.GetIsolate());
