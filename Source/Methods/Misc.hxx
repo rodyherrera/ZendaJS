@@ -34,6 +34,48 @@ namespace Zenda::JavaScript::Methods::Misc{
     static inline void Sleep(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
     static inline void UseWebView(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
     static void SendMail(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
+    static void Timeout(const v8::FunctionCallbackInfo<v8::Value> &Arguments);
+
+    struct ZTimer{
+        uv_timer_t Request;
+        v8::Isolate *Isolate;
+        v8::Global<v8::Function> Callback;
+    };
+
+    uv_loop_t *Loop = DEFAULT_LOOP;
+
+    static void OnTimerCallback(uv_timer_t *Handle){
+        ZTimer *TimerWrap = (ZTimer *)Handle->data;
+        v8::Isolate *Isolate = TimerWrap->Isolate;
+        v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+        if(Isolate->IsDead()){
+            std::cout << "Isolate is dead" << std::endl;
+            return;
+        }
+        v8::Handle<v8::Value> Resultr[] = {
+            v8::Undefined(Isolate),
+            v8::String::NewFromUtf8(v8::Isolate::GetCurrent(), "Hello world").ToLocalChecked()};
+        v8::Local<v8::Function> Callback = v8::Local<v8::Function>::New(Isolate, TimerWrap->Callback);
+        v8::MaybeLocal<v8::Value> CallbackResolve = Callback->Call(Context, v8::Undefined(Isolate), 2, Resultr).ToLocalChecked();
+    }
+
+    static void Timeout(const v8::FunctionCallbackInfo<v8::Value> &Arguments){
+        v8::HandleScope Scope(Arguments.GetIsolate());
+        v8::Local<v8::Context> Context = Arguments.GetIsolate()->GetCurrentContext();
+        int64_t Delay = Arguments[0]->IntegerValue(Context).ToChecked();
+        int64_t Repeat = Arguments[1]->IntegerValue(Context).ToChecked();
+        v8::Local<v8::Value> Callback = Arguments[2];
+        if(!Callback->IsFunction()){
+            std::cout << "Callback not declared!" << std::endl;
+            return;
+        }        
+        ZTimer *TimerWrap = new ZTimer();
+        TimerWrap->Isolate = Arguments.GetIsolate();
+        TimerWrap->Callback.Reset(Arguments.GetIsolate(), Callback.As<v8::Function>());
+        TimerWrap->Request.data = (void *) TimerWrap;
+        uv_timer_init(Loop, &TimerWrap->Request);
+        uv_timer_start(&TimerWrap->Request, OnTimerCallback, Delay, Repeat);
+    }
 
     static void Fetch(const v8::FunctionCallbackInfo<v8::Value>& Arguments){
         v8::HandleScope Scope(Arguments.GetIsolate());

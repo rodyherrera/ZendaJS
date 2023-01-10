@@ -17,6 +17,11 @@ namespace Zenda::Engine{
     static void Shell(v8::Local<v8::Context> Context);
     static const bool ExecuteString(v8::Local<v8::String> Source);
     static inline void LoadZ8();
+    void WaitForEvents();
+
+    void WaitForEvents(){
+        uv_run(DEFAULT_LOOP, UV_RUN_DEFAULT);
+    }
 
     static const std::string GetNextArgument(const std::string CurrentArgument){
         try{
@@ -56,14 +61,15 @@ namespace Zenda::Engine{
                 else if(!CharArgument.compare("About"))
                     ExecuteScript(
                         Zenda::Algorithms::SourceCodeLocation("/Source/External/Arguments/About.js"), Context);
-                    else if(!CharArgument.compare("Run")){
+                else if(!CharArgument.compare("Run")){
                     const std::string MaybeFile = GetNextArgument(CharArgument);
                     if(Zenda::FileSystem::FileExists(MaybeFile)){
                         ExecuteScript(MaybeFile, Context);
+                        WaitForEvents();              
                     }else{
                         std::cout << " * The requested file <" << MaybeFile << "> was not found." << std::endl;
                         exit(EXIT_FAILURE);
-                    }                   
+                    } 
                 }else break;
                 exit(EXIT_SUCCESS);
             }
@@ -79,7 +85,7 @@ namespace Zenda::Engine{
             Zenda::JavaScript::Modules::Load(
                 Zenda::FileSystem::ReadFile(ScriptLocation),
                 ScriptLocation, Context), Context);
-        v8::Local<v8::Value> Returned = Zenda::JavaScript::Modules::Execute(Module, Context);    
+        v8::Local<v8::Value> Returned = Zenda::JavaScript::Modules::Execute(Module, Context);
     }
 
     static void Shell(v8::Local<v8::Context> Context){
@@ -140,6 +146,7 @@ static void EngineEnvironMethods(){
     Zenda::Shortcuts::CreateMethod("Version", Zenda::JavaScript::Methods::Misc::Version);
     Zenda::Shortcuts::CreateMethod("Creator", Zenda::JavaScript::Methods::Misc::Creator);
     Zenda::Shortcuts::CreateMethod("Sleep", Zenda::JavaScript::Methods::Misc::Sleep);
+    Zenda::Shortcuts::CreateMethod("Timeout", Zenda::JavaScript::Methods::Misc::Timeout);
     Zenda::Shortcuts::CreateMethod("PythonString", Zenda::JavaScript::Methods::Python::QuickString);
     Zenda::Shortcuts::CreateMethod("PythonFile", Zenda::JavaScript::Methods::Python::QuickFile);
     Zenda::Shortcuts::CreateMethod("PythonFancyFile", Zenda::JavaScript::Methods::Python::FancyFile);
@@ -223,6 +230,7 @@ static void EngineEnvironObjects(){
     .Register();
 
     Zenda::Shortcuts::CreateObject("System")
+        .SetPropertyMethod("Thread", Zenda::JavaScript::Objects::System::Thread)
         .SetPropertyMethod("GetKernel", Zenda::JavaScript::Objects::System::GetKernel)
         .SetPropertyMethod("GetDistribution", Zenda::JavaScript::Objects::System::GetDistribution)
         .SetPropertyMethod("GetCPU", Zenda::JavaScript::Objects::System::GetCPU)

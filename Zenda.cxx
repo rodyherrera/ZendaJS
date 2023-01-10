@@ -19,6 +19,9 @@
 #include <vector>
 #include <map>
 #include <experimental/filesystem>
+#include <uv.h>
+
+uv_loop_t *DEFAULT_LOOP = uv_default_loop();
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>

@@ -39,6 +39,26 @@ namespace Zenda::JavaScript::Objects::System{
     static const char* ResolveEndiannessName(iware::cpu::endianness_t Endianness) noexcept;
     static const char* ResolveKernelVariantName(iware::system::kernel_t Variant) noexcept;
     static void GetDistribution(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
+    static inline void Thread(const v8::FunctionCallbackInfo<v8::Value>& Arguments);
+    static void RunThread(void *Argument);
+
+    static void RunThread(void *Argument){
+        int Counter = *((int *) Argument);
+        while(Counter){
+            Counter--;
+            fprintf(stderr, ".\n");
+            uv_sleep(100);
+        }
+        fprintf(stderr, "Tortoise done running!\n");
+    }
+
+    static inline void Thread(const v8::FunctionCallbackInfo<v8::Value>& Arguments){
+        v8::HandleScope Scope(Arguments.GetIsolate());
+        int64_t Counter = Arguments[0]->IntegerValue(
+            Arguments.GetIsolate()->GetCurrentContext()).ToChecked();
+        uv_thread_t TaskID;
+        uv_thread_create(&TaskID, RunThread, &Counter);
+    }
     
     static void GetDistribution(const v8::FunctionCallbackInfo<v8::Value>& Arguments){
         v8::HandleScope Scope(Arguments.GetIsolate());

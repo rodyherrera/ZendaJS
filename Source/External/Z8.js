@@ -446,3 +446,6 @@ const ParseEnvironmentFile = (Filename, Options = { Comments: false, EmptyLines:
         .forEach((Item) => EnvironmentObject[Item[0]] = Item[1]);
     return EnvironmentObject;
 };
+
+const SetTimeout = (Callback, Milliseconds) => Timeout(Milliseconds, 0, Callback);
+const SetInterval = (Callback, Milliseconds) => Timeout(0, Milliseconds, Callback);
