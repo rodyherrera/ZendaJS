@@ -102,8 +102,14 @@ namespace Zenda::JavaScript::Methods::Misc{
             v8::String::Utf8Value CustomUserAgent(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "UserAgent"));
             v8::String::Utf8Value CustomCaFilePath(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "CaFilePath"));
             v8::Local<v8::Object> BasicAuth = Zenda::Shortcuts::Get(Options, "BasicAuth").As<v8::Object>();
-            v8::String::Utf8Value CustomBSAUsername(Arguments.GetIsolate(), Zenda::Shortcuts::Get(BasicAuth, "Username"));
-            v8::String::Utf8Value CustomBSAPassword(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "Password"));
+            if(!BasicAuth->IsUndefined()){
+                v8::String::Utf8Value CustomBSAUsername(Arguments.GetIsolate(), Zenda::Shortcuts::Get(BasicAuth, "Username"));
+                v8::String::Utf8Value CustomBSAPassword(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "Password"));
+                if(*CustomBSAUsername)
+                    BSAUsername = std::string(*CustomBSAUsername);
+                if(*CustomBSAPassword)
+                    BSAPassword = std::string(*CustomBSAPassword);
+            }
             v8::String::Utf8Value CustomCertPath(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "CertPath"));
             v8::String::Utf8Value CustomCertType(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "CertType"));
             v8::String::Utf8Value CustomKeyPath(Arguments.GetIsolate(), Zenda::Shortcuts::Get(Options, "KeyPath"));
@@ -122,25 +128,21 @@ namespace Zenda::JavaScript::Methods::Misc{
             }
             if(!CustomTimeout->IsUndefined())
                 Timeout = CustomTimeout->NumberValue(Arguments.GetIsolate()->GetCurrentContext()).FromJust();
-            if(*CustomProxy)
+            if(std::string(*CustomProxy) != "undefined")
                 Proxy = std::string(*CustomProxy);
-            if(*CustomKeyPassword)
+            if(std::string(*CustomKeyPassword) != "undefined")
                 KeyPassword = std::string(*CustomKeyPassword);
-            if(*CustomKeyPath)
+            if(std::string(*CustomKeyPath) != "undefined")
                 KeyPath = std::string(*CustomKeyPath);
-            if(*CustomCertType)
+            if(std::string(*CustomCertType) != "undefined")
                 CertType = std::string(*CustomCertType);
-            if(*CustomCertPath)
+            if(std::string(*CustomCertPath) != "undefined")
                 CertPath = std::string(*CustomCertPath);
-            if(*CustomBSAUsername)
-                BSAUsername = std::string(*CustomBSAUsername);
-            if(*CustomBSAPassword)
-                BSAPassword = std::string(*CustomBSAPassword);
-            if(*CustomUserAgent)
+            if(std::string(*CustomUserAgent) != "undefined")
                 UserAgent = std::string(*CustomUserAgent);
-            if(*CustomMethod)
+            if(std::string(*CustomMethod) != "undefined")
                 Method = std::string(*CustomMethod);
-            if(*CustomBody)
+            if(std::string(*CustomBody) != "undefined")
                 Body = std::string(*CustomBody);
         }
         RestClient::init();
