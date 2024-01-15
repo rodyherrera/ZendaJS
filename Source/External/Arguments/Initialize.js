@@ -5,7 +5,7 @@
  *
  * =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
  *
- * For related information - https://github.com/codewithrodi/ZendaJS/
+ * For related information - https://github.com/rodyherrera/ZendaJS/
  *
  * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  ****/
@@ -52,7 +52,7 @@ Project.JsonAnatomy.Author.Name = Console.Input(' - Author > ');
 Console.Log('\n * Email address, for example: "JohnDoe@microsoft.com"');
 Project.JsonAnatomy.Author.Email = Console.Input(' - Author email > ');
 
-Console.Log('\n * Enter a author website, for example: "https://codewithrodi.com/"');
+Console.Log('\n * Enter a author website, for example: "https://rodyherrera.com/"');
 Project.JsonAnatomy.Author.Website = Console.Input(' - Author website > ');
 
 Project.CreateInCurrentDirectory();

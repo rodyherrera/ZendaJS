@@ -18,7 +18,7 @@ sudo apt-get install python3
 Next, the series of commands that you must execute on your machine for the installation of this JavaScript environment will be shown, make sure you do not leave any out, it is likely that this will take time, since dependencies will be installed.
 ```bash
 # Clone Zenda repo
-git clone https://github.com/codewithrodi/ZendaJS.git
+git clone https://github.com/rodyherrera/ZendaJS.git
 # Enter to Zenda source code
 cd ZendaJS 
 # Update packages

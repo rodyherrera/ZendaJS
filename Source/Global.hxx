@@ -5,7 +5,7 @@
  *
  * =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
  *
- * For related information - https://github.com/codewithrodi/ZendaJS/
+ * For related information - https://github.com/rodyherrera/ZendaJS/
  *
  * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  ****/
@@ -31,9 +31,9 @@ namespace Zenda::Definitions{
 
     > Warning: This is a beta version, not stable.
     - [)""" + std::string(ZENDA_VERSION) + "] - By " + std::string(ZENDA_CREATOR) + R"""(.
-    - contact@codewithrodi.com 
-    - https://codewithrodi.com/
-    - https://github.com/codewithrodi/ZendaJS/
+    - contact@rodyherrera.com 
+    - https://rodyherrera.com/
+    - https://github.com/rodyherrera/ZendaJS/
 )""",
 
         InvalidArgumentFormatText = R"""(
@@ -93,8 +93,8 @@ namespace Zenda::Definitions{
    - parameters that the Zenda executable accepts.
                 
  * If you need more advanced help...
-   - Mail => contact@codewithrodi.com
-   - Website => https://codewithrodi.com/
-   - Repository => https://github.com/codewithrodi/ZendaJS/
+   - Mail => contact@rodyherrera.com
+   - Website => https://rodyherrera.com/
+   - Repository => https://github.com/rodyherrera/ZendaJS/
 )""";
 };

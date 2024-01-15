@@ -5,7 +5,7 @@
  *
  * =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
  *
- * For related information - https://github.com/codewithrodi/ZendaJS/
+ * For related information - https://github.com/rodyherrera/ZendaJS/
  *
  * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  ****/
@@ -288,7 +288,7 @@ namespace Zenda::JavaScript::Methods::Misc{
         v8::HandleScope Scope(Arguments.GetIsolate());
         v8::Local<v8::Object> Configuration = Arguments[0].As<v8::Object>();
         std::string Title = Zenda::Shortcuts::GetKeyValue(Arguments.GetIsolate(), Configuration, "Title", "ZendaJS - Default WebView Window Title");
-        std::string Website = Zenda::Shortcuts::GetKeyValue(Arguments.GetIsolate(), Configuration, "Website", "https://github.com/codewithrodi/ZendaJS/");
+        std::string Website = Zenda::Shortcuts::GetKeyValue(Arguments.GetIsolate(), Configuration, "Website", "https://github.com/rodyherrera/ZendaJS/");
         std::string Evaluate = Zenda::Shortcuts::GetKeyValue(Arguments.GetIsolate(), Configuration, "Evaluate", "");
         std::string Hint = Zenda::Algorithms::StringToUpper(
                 Zenda::Shortcuts::GetKeyValue(Arguments.GetIsolate(), Configuration, "Hint", ""));

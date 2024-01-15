@@ -5,7 +5,7 @@
 # *
 # * =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 # *
-# * For related information - https://github.com/codewithrodi/ZendaJS/
+# * For related information - https://github.com/rodyherrera/ZendaJS/
 # *
 # * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # ****/
@@ -98,9 +98,9 @@ def InstallationSuccess() -> None:
    - along with its required packages.
 
  * If you have mistakes...
-   - Mail => contact@codewithrodi.com
-   - Website => https://codewithrodi.com/
-   - Repository => https://github.com/codewithrodi/ZendaJS/
+   - Mail => contact@rodyherrera.com
+   - Website => https://rodyherrera.com/
+   - Repository => https://github.com/rodyherrera/ZendaJS/
 
  - If you are installing Zenda remember to correctly follow the 
  - instructions indicated in the Github repository.

@@ -5,15 +5,15 @@
  *
  * =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
  *
- * For related information - https://github.com/codewithrodi/ZendaJS/
+ * For related information - https://github.com/rodyherrera/ZendaJS/
  *
  * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  ****/
 
 // OpenDeyim Public API
-// https://github.com/codewithrodi/opendeyim/
-// www.opendeyim.codewithrodi.com
-const ENDPOINT = 'https://deyimapi.codewithrodi.com/api/v1/translate';
+// https://github.com/rodyherrera/opendeyim/
+// www.opendeyim.rodyherrera.com
+const ENDPOINT = 'https://deyimapi.rodyherrera.com/api/v1/translate';
 
 (async function(){
     while(true){

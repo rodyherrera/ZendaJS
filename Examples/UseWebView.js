@@ -5,7 +5,7 @@
  *
  * =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
  *
- * For related information - https://github.com/codewithrodi/ZendaJS/
+ * For related information - https://github.com/rodyherrera/ZendaJS/
  *
  * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  ****/
@@ -13,8 +13,8 @@
 UseWebView({
     // ! Set a title for the window.  <Optional / Default = ZendaJS - Default WebView Window Title>
     Title: 'The ZendaJS Github Repository',
-    // ! Indicates the website that will be loaded in the window  <Optional / Default = https://github.com/codewithrodi/ZendaJS/>
-    Website: 'https://github.com/codewithrodi/ZendaJS/',
+    // ! Indicates the website that will be loaded in the window  <Optional / Default = https://github.com/rodyherrera/ZendaJS/>
+    Website: 'https://github.com/rodyherrera/ZendaJS/',
     // ! Hint of the window <Optional / Default = Normal>
     // ! [Fixed: the window cannot change its size] 
     // ! [Normal: The window will open with the width and height indicated and may be resizable.]
